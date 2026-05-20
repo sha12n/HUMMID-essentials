@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HUMMID essentials | Hardware Archive</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -17,10 +17,10 @@
            ========================================================================== */
         :root {
             --bg-base: #FFFFFF;
-            --bg-off: #FFFCEF;
+            --bg-off: #FAFAF7;
             --text-dark: #000000;
             --text-muted: #666666;
-            --accent-red: #BF0303;
+            --accent-red: #BF0303; 
             --border-color: #E5E5E5;
             --grid-line: rgba(0, 0, 0, 0.04);
         }
@@ -94,7 +94,7 @@
         }
 
         /* ==========================================================================
-           3. FIXED TOP HEADER BAR
+           3. FIXED TOP HEADER BAR with CENTERED LOGO PLACEHOLDER LAYOUT
            ========================================================================== */
         header {
             position: fixed;
@@ -102,35 +102,48 @@
             left: 0;
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; 
             align-items: center;
-            padding: 30px 40px;
+            padding: 15px 40px; 
             z-index: 1000;
             border-bottom: 1px solid var(--border-color);
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
         }
 
+        /* Spacer slot on the left to push logo to center */
+        .header-left-slot {
+            width: 30px; 
+            flex-grow: 1; 
+        }
+
+        /* ==========================================================================
+           4. REFINED, COMPACT CENTERED GEOMETRIC TEXT LOGO
+           ========================================================================== */
         .brand-logo {
             display: flex;
             flex-direction: column;
             line-height: 1;
+            text-align: center; 
+            flex-grow: 0; 
         }
 
         .brand-logo .main-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
+            font-family: 'Syncopate', sans-serif; 
+            font-size: 24px; /* Reduced for a cleaner, minimalist footprint */
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: -1px;
+            color: #000000;
         }
 
         .brand-logo .sub-title {
-            font-size: 10px;
-            color: var(--accent-red);
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-top: 2px;
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; /* Scaled down to match the new main title size */
+            color: var(--accent-red); 
+            text-transform: lowercase; 
+            letter-spacing: 2px;
+            margin-top: 3px; 
             font-weight: 700;
         }
 
@@ -142,6 +155,9 @@
             gap: 6px;
             padding: 10px;
             cursor: none;
+            flex-grow: 1; 
+            text-align: right;
+            align-items: flex-end;
         }
 
         .menu-trigger span {
@@ -158,7 +174,7 @@
         }
 
         /* ==========================================================================
-           4. NOTHING OS STYLED SIDEBAR NAVIGATION (DOT-MATRIX SYSTEM)
+           5. NOTHING OS STYLED SIDEBAR NAVIGATION (DOT-MATRIX SYSTEM)
            ========================================================================== */
         .sidebar-overlay {
             position: fixed;
@@ -206,6 +222,29 @@
             padding-bottom: 20px;
         }
 
+        /* Adjusted sidebar logo to look clean and left-aligned */
+        .sidebar-brand-logo {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+            text-align: left;
+        }
+        .sidebar-brand-logo .main-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #000000;
+        }
+        .sidebar-brand-logo .sub-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            color: var(--accent-red);
+            letter-spacing: 1px;
+            margin-top: 2px;
+            font-weight: 700;
+        }
+
         .close-btn {
             background: none;
             border: 1px solid var(--text-dark);
@@ -238,14 +277,13 @@
             display: block;
             transition: color 0.1s;
             position: relative;
-            /* Inline modular mask generation simulates the Nothing screen configuration */
             background: radial-gradient(circle, var(--text-dark) 40%, transparent 45%);
             background-size: 4px 4px;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Hover conversion rules from active telemetry array */
+        /* Hover conversion rules */
         .nav-item:hover {
             background: radial-gradient(circle, var(--accent-red) 45%, transparent 50%);
             background-size: 3px 3px;
@@ -269,7 +307,7 @@
         }
 
         /* ==========================================================================
-           5. HERO SECTION
+           6. HERO SECTION
            ========================================================================== */
         .hero-section {
             height: 100vh;
@@ -293,9 +331,9 @@
         }
 
         .hero-typography h1 {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Syncopate', sans-serif;
             font-size: 6.5vw;
-            font-weight: 800;
+            font-weight: 700;
             line-height: 0.9;
             text-transform: uppercase;
             letter-spacing: -3px;
@@ -343,7 +381,7 @@
         }
 
         /* ==========================================================================
-           6. INDUSTRIAL DISPLAY SECTION (HORIZONTAL LOCOMOTIVE OVERRIDE)
+           7. INDUSTRIAL DISPLAY SECTION (HORIZONTAL LOCOMOTIVE OVERRIDE)
            ========================================================================== */
         .scroll-container-horizontal {
             position: relative;
@@ -355,7 +393,7 @@
 
         .horizontal-wrap {
             display: flex;
-            width: 300vw; /* 3 complete informational viewports container mapping */
+            width: 300vw; 
             height: 100vh;
         }
 
@@ -371,7 +409,7 @@
         }
 
         .horizontal-panel h2 {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Syncopate', sans-serif;
             font-size: 8vw;
             text-transform: uppercase;
             line-height: 0.8;
@@ -395,7 +433,7 @@
         }
 
         /* ==========================================================================
-           7. INVENTORY ARCHIVE (PRODUCT MATRIX)
+           8. INVENTORY ARCHIVE (PRODUCT MATRIX)
            ========================================================================== */
         .inventory-section {
             padding: 140px 40px;
@@ -415,7 +453,7 @@
         }
 
         .section-header h3 {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Syncopate', sans-serif;
             font-size: 36px;
             text-transform: uppercase;
         }
@@ -495,7 +533,7 @@
         }
 
         /* ==========================================================================
-           8. MANIFESTO (ABOUT SECTION)
+           9. MANIFESTO (ABOUT SECTION)
            ========================================================================== */
         .manifesto-section {
             background-color: var(--bg-off);
@@ -534,10 +572,13 @@
     <div class="custom-cursor-ring"></div>
 
     <header>
+        <div class="header-left-slot"></div> 
+        
         <div class="brand-logo context-hook">
             <span class="main-title">HUMMID</span>
             <span class="sub-title">essentials</span>
         </div>
+        
         <button class="menu-trigger context-hook" id="open-nav" aria-label="Toggle Navigation Module">
             <span></span>
             <span></span>
@@ -548,9 +589,9 @@
     <div class="sidebar-overlay" id="nav-overlay">
         <nav class="sidebar-panel">
             <div class="sidebar-header">
-                <div class="brand-logo">
-                    <span class="main-title" style="font-size:20px;">HUMMID</span>
-                    <span class="sub-title" style="font-size:8px;">sys.active</span>
+                <div class="sidebar-brand-logo">
+                    <span class="main-title">HUMMID</span>
+                    <span class="sub-title">essentials</span>
                 </div>
                 <button class="close-btn context-hook" id="close-nav">Close [X]</button>
             </div>
@@ -714,10 +755,10 @@
             scrollTrigger: {
                 trigger: "#horizontal-pin-zone",
                 pin: true,
-                scrub: 1, // Smooth interaction bound directly to the scroll speed
+                scrub: 1, 
                 start: "top top",
                 end: () => "+=" + horizontalTrack.scrollWidth,
-                invalidateOnRefresh: true // Recalculates dynamically if display orientation matches change
+                invalidateOnRefresh: true 
             }
         });
 
@@ -734,7 +775,7 @@
                     gsap.to(window, {
                         duration: 1.4,
                         scrollTo: targetElement,
-                        ease: "power4.inOut" // Signature premium, snappy deceleration curve
+                        ease: "power4.inOut" 
                     });
                 }
             });
