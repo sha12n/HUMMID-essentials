@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUMMID essentials | Hardware Archive</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           1. SETUP & CORE DESIGN VARIABLES (NOTHING OS ESTHETIC)
+           ========================================================================== */
+        :root {
+            --bg-base: #FFFFFF;
+            --bg-off: #FFFCEF;
+            --text-dark: #000000;
+            --text-muted: #666666;
+            --accent-red: #BF0303;
+            --border-color: #E5E5E5;
+            --grid-line: rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none !important; /* Forces custom hardware cursor usage */
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-dark);
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden;
+            letter-spacing: -0.02em;
+        }
+
+        /* Global structural grid background overlay */
+        .global-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ==========================================================================
+           2. INTERACTIVE HARDWARE CURSOR
+           ========================================================================== */
+        .custom-cursor {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-red);
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 99999;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        .custom-cursor-ring {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--text-dark);
+            position: fixed;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 99998;
+        }
+
+        /* Interactive hover state overrides */
+        .cursor-hover .custom-cursor {
+            width: 4px;
+            height: 4px;
+            background-color: var(--text-dark);
+        }
+        .cursor-hover .custom-cursor-ring {
+            width: 50px;
+            height: 50px;
+            border-color: var(--accent-red);
+            border-style: dashed;
+        }
+
+        /* ==========================================================================
+           3. FIXED TOP HEADER BAR
+           ========================================================================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 40px;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+        }
+
+        .brand-logo {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .brand-logo .main-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo .sub-title {
+            font-size: 10px;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-top: 2px;
+            font-weight: 700;
+        }
+
+        .menu-trigger {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px;
+            cursor: none;
+        }
+
+        .menu-trigger span {
+            display: block;
+            width: 28px;
+            height: 2px;
+            background-color: var(--text-dark);
+            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .menu-trigger:hover span:nth-child(2) {
+            background-color: var(--accent-red);
+            transform: translateX(-4px);
+        }
+
+        /* ==========================================================================
+           4. NOTHING OS STYLED SIDEBAR NAVIGATION (DOT-MATRIX SYSTEM)
+           ========================================================================== */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            display: flex;
+            justify-content: flex-end;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .sidebar-panel {
+            width: 450px;
+            height: 100%;
+            background: var(--bg-base);
+            border-left: 1px solid var(--text-dark);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-overlay.active .sidebar-panel {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--text-dark);
+            padding-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: 1px solid var(--text-dark);
+            font-family: 'Space Mono', monospace;
+            padding: 5px 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        /* Custom Pixel Dot-Matrix Navigation System via SVG Masks */
+        .sidebar-nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: -40px;
+        }
+
+        .sidebar-nav-list li {
+            position: relative;
+        }
+
+        .nav-item {
+            font-family: 'Space Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            display: block;
+            transition: color 0.1s;
+            position: relative;
+            /* Inline modular mask generation simulates the Nothing screen configuration */
+            background: radial-gradient(circle, var(--text-dark) 40%, transparent 45%);
+            background-size: 4px 4px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hover conversion rules from active telemetry array */
+        .nav-item:hover {
+            background: radial-gradient(circle, var(--accent-red) 45%, transparent 50%);
+            background-size: 3px 3px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding-left: 10px;
+        }
+
+        .sidebar-footer {
+            border-top: 1px dashed var(--border-color);
+            padding-top: 20px;
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sidebar-footer a {
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+
+        /* ==========================================================================
+           5. HERO SECTION
+           ========================================================================== */
+        .hero-section {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5%;
+            position: relative;
+            z-index: 2;
+            border-bottom: 1px solid var(--text-dark);
+        }
+
+        .hero-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            max-width: 1400px;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .hero-typography h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 6.5vw;
+            font-weight: 800;
+            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: -3px;
+        }
+
+        .hero-typography .highlight {
+            color: var(--accent-red);
+            display: block;
+        }
+
+        .hero-typography p {
+            margin-top: 30px;
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .hero-display-box {
+            border: 1px solid var(--text-dark);
+            height: 500px;
+            background: #F9F9F9;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-display-box img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+            filter: grayscale(100%);
+            mix-blend-mode: multiply;
+        }
+
+        .telemetry-tag {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================================================
+           6. INDUSTRIAL DISPLAY SECTION (HORIZONTAL LOCOMOTIVE OVERRIDE)
+           ========================================================================== */
+        .scroll-container-horizontal {
+            position: relative;
+            width: 100vw;
+            overflow: hidden;
+            background: var(--text-dark);
+            color: var(--bg-base);
+        }
+
+        .horizontal-wrap {
+            display: flex;
+            width: 300vw; /* 3 complete informational viewports container mapping */
+            height: 100vh;
+        }
+
+        .horizontal-panel {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .horizontal-panel h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 8vw;
+            text-transform: uppercase;
+            line-height: 0.8;
+            letter-spacing: -4px;
+        }
+
+        .panel-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            max-width: 1400px;
+            align-items: center;
+        }
+
+        .panel-meta {
+            font-size: 12px;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* ==========================================================================
+           7. INVENTORY ARCHIVE (PRODUCT MATRIX)
+           ========================================================================== */
+        .inventory-section {
+            padding: 140px 40px;
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--text-dark);
+            padding-bottom: 20px;
+        }
+
+        .section-header h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 36px;
+            text-transform: uppercase;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background-color: var(--text-dark);
+            border: 1px solid var(--text-dark);
+        }
+
+        @media(max-width: 900px) { .catalog-grid { grid-template-columns: 1fr; } }
+
+        .catalog-item {
+            background: var(--bg-base);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            justify-content: space-between;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .catalog-item:hover {
+            background: var(--bg-off);
+        }
+
+        .item-visual {
+            width: 100%;
+            height: 300px;
+            background: #FAFAFA;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .item-visual img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            filter: grayscale(100%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .catalog-item:hover .item-visual img {
+            transform: scale(1.08) rotate(2deg);
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 20px;
+        }
+
+        .item-title {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .item-category {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .item-price {
+            font-size: 16px;
+            color: var(--accent-red);
+            font-weight: 700;
+        }
+
+        /* ==========================================================================
+           8. MANIFESTO (ABOUT SECTION)
+           ========================================================================== */
+        .manifesto-section {
+            background-color: var(--bg-off);
+            padding: 120px 40px;
+            border-top: 1px solid var(--text-dark);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .manifesto-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .manifesto-container h4 {
+            font-size: 12px;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+        }
+
+        .manifesto-container p {
+            font-family: 'Space Mono', monospace;
+            font-size: 24px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="global-grid"></div>
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-ring"></div>
+
+    <header>
+        <div class="brand-logo context-hook">
+            <span class="main-title">HUMMID</span>
+            <span class="sub-title">essentials</span>
+        </div>
+        <button class="menu-trigger context-hook" id="open-nav" aria-label="Toggle Navigation Module">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <div class="sidebar-overlay" id="nav-overlay">
+        <nav class="sidebar-panel">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <span class="main-title" style="font-size:20px;">HUMMID</span>
+                    <span class="sub-title" style="font-size:8px;">sys.active</span>
+                </div>
+                <button class="close-btn context-hook" id="close-nav">Close [X]</button>
+            </div>
+
+            <ul class="sidebar-nav-list">
+                <li><a href="#products" class="nav-item context-hook nav-anchor" data-target="#products">Products</a></li>
+                <li><a href="#dashboard" class="nav-item context-hook nav-anchor" data-target="#dashboard">Dashboard</a></li>
+                <li><a href="#contact" class="nav-item context-hook nav-anchor" data-target="#contact">Contact</a></li>
+                <li><a href="#socials" class="nav-item context-hook nav-anchor" data-target="#socials">Socials</a></li>
+                <li><a href="#login" class="nav-item context-hook nav-anchor" data-target="#login">Log In</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <span>LOC: 50.4501° N</span>
+                <span>CORE VER // 2026.05</span>
+            </div>
+        </nav>
+    </div>
+
+    <section class="hero-section" id="home">
+        <div class="hero-layout">
+            <div class="hero-typography">
+                <h1>RAW <span class="highlight">ESSENTIALS</span></h1>
+                <p>An intelligent ecosystem built with calculated digital geometry. Stripped of superficiality. Programmed for standard hardware operational performance.</p>
+            </div>
+            <div class="hero-display-box">
+                <span class="telemetry-tag">Product Module // H-01</span>
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop" alt="Hardware Sample">
+            </div>
+        </div>
+    </section>
+
+    <div class="scroll-container-horizontal" id="horizontal-pin-zone">
+        <div class="horizontal-wrap" id="horizontal-track">
+            
+            <div class="horizontal-panel">
+                <div class="panel-split">
+                    <div>
+                        <span class="panel-meta">01 // THE ARCHITECTURE</span>
+                        <h2>PURE MASK TECHNOLOGY.</h2>
+                    </div>
+                    <p style="opacity: 0.7; max-width: 400px; font-size: 14px; line-height: 1.8;">We use zero variable curves. Every intersection is plotted on a strict grid setup, resulting in sharp architectural layouts.</p>
+                </div>
+            </div>
+
+            <div class="horizontal-panel" style="background: #0A0A0A;">
+                <div class="panel-split">
+                    <div>
+                        <span class="panel-meta">02 // THE CHROME ENGINE</span>
+                        <h2 style="color: var(--accent-red);">HIGH SPEED DEPLOYMENT.</h2>
+                    </div>
+                    <p style="opacity: 0.7; max-width: 400px; font-size: 14px; line-height: 1.8;">Engineered completely outside standard templating constraints. High rendering execution speeds across global nodes.</p>
+                </div>
+            </div>
+
+            <div class="horizontal-panel" style="background: var(--accent-red); color: #FFF;">
+                <div class="panel-split">
+                    <div>
+                        <span class="panel-meta" style="color: #000;">03 // VERIFICATION ROUTINE</span>
+                        <h2 style="color: #000;">100% OPERATIONAL.</h2>
+                    </div>
+                    <p style="opacity: 0.9; max-width: 400px; font-size: 14px; line-height: 1.8; color: #000;">Every build iteration is systematically balanced against real hardware requirements to ensure clean utility output.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <section class="inventory-section" id="products">
+        <div class="section-header">
+            <h3>THE ARCHIVE</h3>
+            <span style="font-size:12px; color: var(--text-muted);">SHOWING 3 OF 3 INITIAL RELEASES</span>
+        </div>
+        
+        <div class="catalog-grid">
+            
+            <div class="catalog-item context-hook">
+                <div class="item-visual">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop" alt="Item Alpha">
+                </div>
+                <div class="item-footer">
+                    <div>
+                        <span class="item-category">SYS-MODULE // 001</span>
+                        <div class="item-title">AURA CHROME RUNNER</div>
+                    </div>
+                    <span class="item-price">₹8,999</span>
+                </div>
+            </div>
+
+            <div class="catalog-item context-hook">
+                <div class="item-visual">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop" alt="Item Beta">
+                </div>
+                <div class="item-footer">
+                    <div>
+                        <span class="item-category">SYS-MODULE // 002</span>
+                        <div class="item-title">HORIZON GRID TIMEPIECE</div>
+                    </div>
+                    <span class="item-price">₹14,500</span>
+                </div>
+            </div>
+
+            <div class="catalog-item context-hook">
+                <div class="item-visual">
+                    <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000&auto=format&fit=crop" alt="Item Gamma">
+                </div>
+                <div class="item-footer">
+                    <div>
+                        <span class="item-category">SYS-MODULE // 003</span>
+                        <div class="item-title">MONO AUDIO RETICLE</div>
+                    </div>
+                    <span class="item-price">₹4,200</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="manifesto-section" id="dashboard">
+        <div class="manifesto-container">
+            <h4>HUMMID MANIFESTO // ACCESSED</h4>
+            <p>We reject the bloated design patterns of the current modern web framework. HUMMID essentials stands for raw visual transparency, high functional intent, and minimalist execution benchmarks. Intended for tech-forward users who value calculated structural order over empty aesthetic decoration.</p>
+        </div>
+    </section>
+
+    <script>
+        // Activate GSAP Scroll Engines
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+        // Hardware Cursor Tracking System
+        const cursorDot = document.querySelector('.custom-cursor');
+        const cursorRing = document.querySelector('.custom-cursor-ring');
+
+        window.addEventListener('mousemove', (e) => {
+            // Instant tracking position for core structural point
+            gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0 });
+            // Elastic delay calculation for ambient cursor ring
+            gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.25, ease: "power2.out" });
+        });
+
+        // Toggle state class changes on context hooks
+        document.querySelectorAll('.context-hook').forEach(element => {
+            element.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            element.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        // Navigation Sidebar Trigger Logic
+        const navOverlay = document.getElementById('nav-overlay');
+        const openNavBtn = document.getElementById('open-nav');
+        const closeNavBtn = document.getElementById('close-nav');
+
+        openNavBtn.addEventListener('click', () => navOverlay.classList.add('active'));
+        closeNavBtn.addEventListener('click', () => navOverlay.classList.remove('active'));
+
+        // High-Premium Horizontal Scroll Matrix via GSAP ScrollTrigger
+        const horizontalTrack = document.getElementById('horizontal-track');
+        
+        gsap.to(horizontalTrack, {
+            x: () => -(horizontalTrack.scrollWidth - window.innerWidth),
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#horizontal-pin-zone",
+                pin: true,
+                scrub: 1, // Smooth interaction bound directly to the scroll speed
+                start: "top top",
+                end: () => "+=" + horizontalTrack.scrollWidth,
+                invalidateOnRefresh: true // Recalculates dynamically if display orientation matches change
+            }
+        });
+
+        // Premium Easing Engine for Sidebar Links
+        document.querySelectorAll('.nav-anchor').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                navOverlay.classList.remove('active');
+                
+                const targetSelector = this.getAttribute('data-target');
+                const targetElement = document.querySelector(targetSelector);
+                
+                if (targetElement) {
+                    gsap.to(window, {
+                        duration: 1.4,
+                        scrollTo: targetElement,
+                        ease: "power4.inOut" // Signature premium, snappy deceleration curve
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
