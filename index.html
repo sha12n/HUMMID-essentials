@@ -30,7 +30,12 @@
 
             /* Ambient Orb Colors */
             --orb-1: rgba(255, 255, 255, 0.05);
-            --orb-2: rgba(191, 3, 3, 0.08); /* Faint red glow */
+            --orb-2: rgba(191, 3, 3, 0.08);
+            
+            /* Accordion Variables */
+            --acc-bg: #0C0C0C;
+            --acc-hover: #151515;
+            --input-bg: #111111;
         }
 
         html[data-theme="light"] {
@@ -47,231 +52,90 @@
             /* Inverted Light Mode Orbs */
             --orb-1: rgba(0, 0, 0, 0.04);
             --orb-2: rgba(191, 3, 3, 0.05);
+            
+            /* Accordion Light Mode */
+            --acc-bg: #F5F5F5;
+            --acc-hover: #EBEBEB;
+            --input-bg: #FFFFFF;
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
             cursor: none !important; 
         }
 
         body {
-            background-color: var(--bg-base);
-            color: var(--text-dark);
-            font-family: 'Space Mono', monospace;
-            overflow-x: hidden;
-            letter-spacing: -0.02em;
-            transition: background-color 0.5s ease, color 0.5s ease;
+            background-color: var(--bg-base); color: var(--text-dark);
+            font-family: 'Space Mono', monospace; overflow-x: hidden;
+            letter-spacing: -0.02em; transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         /* ==========================================================================
            2. JUSTICE ARC AMBIENT BACKGROUND & ANTIGRAVITY GRID
            ========================================================================== */
-        
-        /* Floating Ambient Orbs */
-        .ambient-background {
-            position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
-        }
+        .ambient-background { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .ambient-orb { position: absolute; border-radius: 50%; filter: blur(80px); transition: background-color 0.5s ease; }
+        .orb-1 { top: -10%; left: -10%; width: 40vw; height: 40vw; background: var(--orb-1); animation: floatOne 15s ease-in-out infinite; }
+        .orb-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: var(--orb-2); animation: floatTwo 20s ease-in-out infinite; }
+        .orb-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: var(--orb-1); animation: floatThree 18s ease-in-out infinite; }
 
-        .ambient-orb {
-            position: absolute; border-radius: 50%; filter: blur(80px);
-            transition: background-color 0.5s ease;
-        }
+        @keyframes floatOne { 0%, 100% { transform: translate(0px, 0px) scale(1); } 50% { transform: translate(100px, 50px) scale(1.1); } }
+        @keyframes floatTwo { 0%, 100% { transform: translate(0px, 0px) scale(1); } 50% { transform: translate(-80px, -60px) scale(1.05); } }
+        @keyframes floatThree { 0%, 100% { transform: translate(0px, 0px); } 50% { transform: translate(-50px, -80px); } }
 
-        .orb-1 {
-            top: -10%; left: -10%; width: 40vw; height: 40vw; background: var(--orb-1);
-            animation: floatOne 15s ease-in-out infinite;
-        }
-
-        .orb-2 {
-            bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: var(--orb-2);
-            animation: floatTwo 20s ease-in-out infinite;
-        }
-
-        .orb-3 {
-            top: 40%; left: 40%; width: 30vw; height: 30vw; background: var(--orb-1);
-            animation: floatThree 18s ease-in-out infinite;
-        }
-
-        @keyframes floatOne {
-            0%, 100% { transform: translate(0px, 0px) scale(1); }
-            50% { transform: translate(100px, 50px) scale(1.1); }
-        }
-        @keyframes floatTwo {
-            0%, 100% { transform: translate(0px, 0px) scale(1); }
-            50% { transform: translate(-80px, -60px) scale(1.05); }
-        }
-        @keyframes floatThree {
-            0%, 100% { transform: translate(0px, 0px); }
-            50% { transform: translate(-50px, -80px); }
-        }
-
-        /* Google Antigravity Canvas Grid */
-        #antigravity-grid {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Container to push main content above background */
-        .content-wrapper {
-            position: relative; z-index: 10;
-        }
+        #antigravity-grid { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
+        .content-wrapper { position: relative; z-index: 10; }
 
         /* ==========================================================================
            3. HARDWARE CURSOR (DATA RIBBON)
            ========================================================================== */
-        
-        .custom-cursor-dot {
-            width: 6px; height: 6px; background-color: var(--cursor-accent);
-            border-radius: 50%; position: fixed; top: 0; left: 0;
-            pointer-events: none; z-index: 99999;
-            transition: background-color 0.3s ease;
-        }
-
-        .custom-cursor-trail {
-            width: 4px; height: 4px; background-color: var(--cursor-accent);
-            border-radius: 50%; position: fixed; top: 0; left: 0;
-            pointer-events: none; z-index: 99998;
-            transition: background-color 0.3s ease;
-        }
-
-        .custom-cursor-pulse {
-            width: 24px; height: 24px; border: 1px solid var(--cursor-accent);
-            border-radius: 50%; position: fixed; top: 0; left: 0;
-            pointer-events: none; z-index: 99997; opacity: 0; 
-        }
+        .custom-cursor-dot { width: 6px; height: 6px; background-color: var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999; transition: background-color 0.3s ease; }
+        .custom-cursor-trail { width: 4px; height: 4px; background-color: var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99998; transition: background-color 0.3s ease; }
+        .custom-cursor-pulse { width: 24px; height: 24px; border: 1px solid var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99997; opacity: 0; }
+        @keyframes record-pulse { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; border-width: 2px; } 100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; border-width: 0px; } }
 
         /* ==========================================================================
            4. HEADER & LOGO
            ========================================================================== */
-        header {
-            position: fixed; top: 0; left: 0; width: 100%; display: flex;
-            justify-content: space-between; align-items: center; padding: 15px 40px; 
-            z-index: 1000; border-bottom: 1px solid var(--border-color);
-            background: var(--header-bg); backdrop-filter: blur(20px);
-            transition: background-color 0.5s ease, border-color 0.5s ease;
-        }
-
+        header { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; z-index: 1000; border-bottom: 1px solid var(--border-color); background: var(--header-bg); backdrop-filter: blur(20px); transition: background-color 0.5s ease, border-color 0.5s ease; }
         .header-left-slot { width: 150px; }
-
-        .brand-logo {
-            display: flex; flex-direction: column; line-height: 1; text-align: center; flex-grow: 0; 
-        }
-        .brand-logo .main-title {
-            font-family: 'Syncopate', sans-serif; font-size: 24px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: -1px; color: var(--text-dark);
-            transition: color 0.5s ease;
-        }
-        .brand-logo .sub-title {
-            font-family: 'Space Mono', monospace; font-size: 9px; color: var(--accent-red); 
-            text-transform: lowercase; letter-spacing: 2px; margin-top: 3px; font-weight: 700;
-        }
-
-        .header-right-controls {
-            display: flex; align-items: center; gap: 20px; width: 150px; justify-content: flex-end;
-        }
-
-        .theme-toggle-btn {
-            background: none; border: none; color: var(--text-muted);
-            font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
-            letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s ease;
-        }
+        .brand-logo { display: flex; flex-direction: column; line-height: 1; text-align: center; flex-grow: 0; }
+        .brand-logo .main-title { font-family: 'Syncopate', sans-serif; font-size: 24px; font-weight: 700; text-transform: uppercase; letter-spacing: -1px; color: var(--text-dark); transition: color 0.5s ease; }
+        .brand-logo .sub-title { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--accent-red); text-transform: lowercase; letter-spacing: 2px; margin-top: 3px; font-weight: 700; }
+        .header-right-controls { display: flex; align-items: center; gap: 20px; width: 150px; justify-content: flex-end; }
+        .theme-toggle-btn { background: none; border: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s ease; }
         .theme-toggle-btn:hover { color: var(--cursor-accent); }
-
-        .menu-trigger {
-            background: none; border: none; display: flex; flex-direction: column; gap: 6px; padding: 10px;
-        }
-        .menu-trigger span {
-            display: block; width: 28px; height: 2px; background-color: var(--text-dark);
-            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease;
-        }
-        .menu-trigger:hover span:nth-child(2) {
-            background-color: var(--cursor-accent); transform: translateX(-4px);
-        }
+        .menu-trigger { background: none; border: none; display: flex; flex-direction: column; gap: 6px; padding: 10px; }
+        .menu-trigger span { display: block; width: 28px; height: 2px; background-color: var(--text-dark); transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease; }
+        .menu-trigger:hover span:nth-child(2) { background-color: var(--cursor-accent); transform: translateX(-4px); }
 
         /* ==========================================================================
            5. SIDEBAR NAVIGATION 
            ========================================================================== */
-        .sidebar-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(15px); z-index: 2000;
-            display: flex; justify-content: flex-end; opacity: 0; pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(15px); z-index: 2000; display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
-
-        .sidebar-panel {
-            width: 450px; height: 100%; background: var(--bg-base);
-            border-left: 1px solid var(--border-color); padding: 40px; display: flex;
-            flex-direction: column; justify-content: space-between; transform: translateX(100%);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease;
-        }
+        .sidebar-panel { width: 450px; height: 100%; background: var(--bg-base); border-left: 1px solid var(--border-color); padding: 40px; display: flex; flex-direction: column; justify-content: space-between; transform: translateX(100%); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease; }
         .sidebar-overlay.active .sidebar-panel { transform: translateX(0); }
-
-        .sidebar-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px dashed var(--border-color); padding-bottom: 20px;
-        }
-
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border-color); padding-bottom: 20px; }
         .sidebar-brand-logo .main-title { font-family: 'Syncopate', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -1px; color: var(--text-dark); }
         .sidebar-brand-logo .sub-title { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--accent-red); letter-spacing: 1px; margin-top: 2px; font-weight: 700; }
-
-        .close-btn {
-            background: none; color: var(--text-dark); border: 1px solid var(--text-dark);
-            font-family: 'Space Mono', monospace; padding: 5px 15px; font-size: 12px; text-transform: uppercase; transition: all 0.3s ease;
-        }
+        .close-btn { background: none; color: var(--text-dark); border: 1px solid var(--text-dark); font-family: 'Space Mono', monospace; padding: 5px 15px; font-size: 12px; text-transform: uppercase; transition: all 0.3s ease; }
         .close-btn:hover { border-color: var(--cursor-accent); color: var(--cursor-accent); }
-
-        .sidebar-nav-list { list-style: none; display: flex; flex-direction: column; gap: 25px; margin-top: -40px; }
         
-        .nav-item {
-            font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700;
-            text-decoration: none; color: var(--text-dark); text-transform: uppercase;
-            display: block; position: relative;
-            background: radial-gradient(circle, var(--text-dark) 40%, transparent 45%);
-            background-size: 4px 4px; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1); 
-        }
-        .nav-item:hover {
-            background: radial-gradient(circle, var(--cursor-accent) 45%, transparent 50%);
-            background-size: 3px 3px; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            padding-left: 15px; letter-spacing: 2px;
-        }
-
-        .sidebar-footer {
-            border-top: 1px dashed var(--border-color); padding-top: 20px;
-            font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between;
-        }
+        .sidebar-nav-list { list-style: none; display: flex; flex-direction: column; gap: 25px; margin-top: -40px; }
+        .nav-item { font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700; text-decoration: none; color: var(--text-dark); text-transform: uppercase; display: block; position: relative; background: radial-gradient(circle, var(--text-dark) 40%, transparent 45%); background-size: 4px 4px; -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1); }
+        .nav-item:hover { background: radial-gradient(circle, var(--cursor-accent) 45%, transparent 50%); background-size: 3px 3px; -webkit-background-clip: text; -webkit-text-fill-color: transparent; padding-left: 15px; letter-spacing: 2px; }
+        .sidebar-footer { border-top: 1px dashed var(--border-color); padding-top: 20px; font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
 
         /* ==========================================================================
            6. SECTIONS
            ========================================================================== */
-        .hero-section {
-            height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center;
-            padding: 0 5%; border-bottom: 1px solid var(--border-color);
-        }
-
-        .hero-layout {
-            display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 1400px;
-            align-items: center; gap: 40px;
-        }
-
-        .hero-typography h1 {
-            font-family: 'Syncopate', sans-serif; font-size: 6.5vw; font-weight: 700;
-            line-height: 0.9; text-transform: uppercase; letter-spacing: -3px;
-        }
+        .hero-section { height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; padding: 0 5%; border-bottom: 1px solid var(--border-color); }
+        .hero-layout { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 1400px; align-items: center; gap: 40px; }
+        .hero-typography h1 { font-family: 'Syncopate', sans-serif; font-size: 6.5vw; font-weight: 700; line-height: 0.9; text-transform: uppercase; letter-spacing: -3px; }
         .hero-typography .highlight { color: var(--accent-red); display: block; }
         .hero-typography p { margin-top: 30px; font-size: 14px; color: var(--text-muted); max-width: 400px; line-height: 1.6; }
-
-        .hero-display-box {
-            border: 1px solid var(--border-color); height: 500px; background: var(--image-bg);
-            position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;
-            transition: background-color 0.5s ease, border-color 0.5s ease;
-        }
+        .hero-display-box { border: 1px solid var(--border-color); height: 500px; background: var(--image-bg); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: background-color 0.5s ease, border-color 0.5s ease; }
         .hero-display-box img { width: 80%; height: 80%; object-fit: contain; filter: grayscale(100%) contrast(1.2); }
         .telemetry-tag { position: absolute; bottom: 15px; left: 15px; font-size: 10px; text-transform: uppercase; color: var(--text-muted); }
 
@@ -280,65 +144,62 @@
         .feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
         .feature-row.reverse { grid-template-columns: 1fr 1fr; direction: rtl; }
         .feature-row.reverse > * { direction: ltr; }
-
-        .feature-text h2 {
-            font-family: 'Syncopate', sans-serif; font-size: 3.5vw; text-transform: uppercase;
-            line-height: 0.9; letter-spacing: -2px; margin-bottom: 20px; color: var(--text-dark); transition: color 0.5s ease;
-        }
-        .feature-meta {
-            font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent-red);
-            text-transform: uppercase; margin-bottom: 15px; display: block; letter-spacing: 1px; font-weight: 700;
-        }
+        .feature-text h2 { font-family: 'Syncopate', sans-serif; font-size: 3.5vw; text-transform: uppercase; line-height: 0.9; letter-spacing: -2px; margin-bottom: 20px; color: var(--text-dark); transition: color 0.5s ease; }
+        .feature-meta { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent-red); text-transform: uppercase; margin-bottom: 15px; display: block; letter-spacing: 1px; font-weight: 700; }
         .feature-text p { color: var(--text-muted); font-size: 15px; line-height: 1.8; max-width: 450px; }
-
-        .feature-visual {
-            width: 100%; height: 400px; border: 1px solid var(--border-color); background: var(--image-bg);
-            position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
+        .feature-visual { width: 100%; height: 400px; border: 1px solid var(--border-color); background: var(--image-bg); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .feature-visual img { width: 80%; height: 80%; object-fit: contain; filter: grayscale(100%) contrast(1.2); }
 
         .inventory-section { padding: 140px 40px; max-width: 1400px; margin: 0 auto; }
-        .section-header {
-            display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px;
-            border-bottom: 1px solid var(--border-color); padding-bottom: 20px; transition: border-color 0.5s ease;
-        }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; transition: border-color 0.5s ease; }
         .section-header h3 { font-family: 'Syncopate', sans-serif; font-size: 36px; text-transform: uppercase; }
-
-        .catalog-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; 
-            background-color: var(--border-color); border: 1px solid var(--border-color);
-            transition: background-color 0.5s ease, border-color 0.5s ease;
-        }
+        .catalog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background-color: var(--border-color); border: 1px solid var(--border-color); transition: background-color 0.5s ease, border-color 0.5s ease; }
         @media(max-width: 900px) { .catalog-grid { grid-template-columns: 1fr; } }
-
-        .catalog-item {
-            background: var(--bg-base); padding: 30px; display: flex; flex-direction: column;
-            height: 500px; justify-content: space-between; position: relative; z-index: 1; 
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-        }
         
-        .catalog-item:hover {
-            background: var(--bg-off); z-index: 10; transform: scale(1.02) translateY(-6px); 
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); 
-        }
-        html[data-theme="light"] .catalog-item:hover {
-            background-color: #F0F0F0; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12); 
-        }
-
-        .item-visual {
-            width: 100%; height: 300px; background: var(--image-bg); display: flex; align-items: center;
-            justify-content: center; border: 1px solid var(--border-color); overflow: hidden; transition: background-color 0.5s ease;
-        }
-        .item-visual img {
-            width: 70%; height: 70%; object-fit: contain; filter: grayscale(100%) contrast(1.2);
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        }
+        .catalog-item { background: var(--bg-base); padding: 30px; display: flex; flex-direction: column; height: 500px; justify-content: space-between; position: relative; z-index: 1; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
+        .catalog-item:hover { background: var(--bg-off); z-index: 10; transform: scale(1.02) translateY(-6px); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); }
+        html[data-theme="light"] .catalog-item:hover { background-color: #F0F0F0; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12); }
+        
+        .item-visual { width: 100%; height: 300px; background: var(--image-bg); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); overflow: hidden; transition: background-color 0.5s ease; }
+        .item-visual img { width: 70%; height: 70%; object-fit: contain; filter: grayscale(100%) contrast(1.2); transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
         .catalog-item:hover .item-visual img { transform: scale(1.04); }
-
         .item-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; }
         .item-title { font-size: 16px; font-weight: 700; text-transform: uppercase; }
         .item-category { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
         .item-price { font-size: 16px; color: var(--accent-red); font-weight: 700; }
+
+        /* ==========================================================================
+           7. PREMIUM ACCORDION FOOTER
+           ========================================================================== */
+        .footer-section { padding: 100px 40px; max-width: 800px; margin: 0 auto; }
+        
+        .accordion-item { margin-bottom: 8px; border-radius: 8px; background: var(--acc-bg); overflow: hidden; transition: background-color 0.5s ease; }
+        .accordion-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 25px 30px; background: transparent; border: none; color: var(--text-dark); font-family: 'Syncopate', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; transition: background-color 0.3s ease; }
+        .accordion-header:hover { background: var(--acc-hover); }
+        .accordion-header .icon { font-family: 'Space Mono', monospace; font-size: 16px; transition: transform 0.4s ease; }
+        
+        .accordion-content { height: 0; overflow: hidden; transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .accordion-inner { padding: 0 30px 30px 30px; }
+        .accordion-item.active .accordion-content { height: auto; }
+        .accordion-item.active .icon-arrow { transform: rotate(180deg); }
+
+        /* About Panel Content */
+        .manifesto-text { color: var(--text-muted); font-size: 14px; line-height: 1.8; margin-top: 10px; }
+        
+        /* Support Panel Form */
+        .support-form { display: grid; gap: 15px; margin-top: 10px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .support-form input, .support-form textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-dark); padding: 15px; font-family: 'Space Mono', monospace; font-size: 12px; border-radius: 8px; outline: none; transition: border-color 0.3s ease, background-color 0.5s ease; }
+        .support-form input:focus, .support-form textarea:focus { border-color: var(--accent-red); }
+        .support-btn { background: var(--bg-base); color: var(--text-dark); border: 1px solid var(--border-color); font-family: 'Syncopate', sans-serif; font-size: 12px; font-weight: 700; padding: 15px; border-radius: 8px; text-transform: uppercase; transition: all 0.3s ease; }
+        .support-btn:hover { background: var(--text-dark); color: var(--bg-base); border-color: var(--text-dark); }
+
+        /* Language Panel Options */
+        .lang-options { display: flex; gap: 15px; margin-top: 10px; }
+        .lang-btn { flex: 1; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-dark); padding: 15px; font-family: 'Syncopate', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; border-radius: 8px; transition: all 0.3s ease; }
+        .lang-btn:hover, .lang-btn.active { border-color: var(--accent-red); color: var(--accent-red); }
+
+        @media(max-width: 600px) { .form-row { grid-template-columns: 1fr; } .lang-options { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -367,7 +228,7 @@
                 <span class="sub-title">essentials</span>
             </div>
             <div class="header-right-controls">
-                <button id="theme-toggle" class="theme-toggle-btn context-hook">[ LIGHT ]</button>
+                <button id="theme-toggle" class="theme-toggle-btn context-hook"><span data-i18n="theme_light">[ LIGHT ]</span></button>
                 <button class="menu-trigger context-hook" id="open-nav" aria-label="Toggle Navigation Module">
                     <span></span><span></span><span></span>
                 </button>
@@ -381,15 +242,15 @@
                         <span class="main-title">HUMMID</span>
                         <span class="sub-title">essentials</span>
                     </div>
-                    <button class="close-btn context-hook" id="close-nav">Close [X]</button>
+                    <button class="close-btn context-hook" id="close-nav" data-i18n="close_btn">Close [X]</button>
                 </div>
 
                 <ul class="sidebar-nav-list">
-                    <li><a href="#products" class="nav-item context-hook nav-anchor" data-target="#products">Products</a></li>
-                    <li><a href="#dashboard" class="nav-item context-hook nav-anchor" data-target="#dashboard">Dashboard</a></li>
-                    <li><a href="#contact" class="nav-item context-hook nav-anchor" data-target="#contact">Contact</a></li>
-                    <li><a href="#socials" class="nav-item context-hook nav-anchor" data-target="#socials">Socials</a></li>
-                    <li><a href="#login" class="nav-item context-hook nav-anchor" data-target="#login">Log In</a></li>
+                    <li><a href="#products" class="nav-item context-hook nav-anchor" data-target="#products" data-i18n="nav_products">Products</a></li>
+                    <li><a href="#dashboard" class="nav-item context-hook nav-anchor" data-target="#dashboard" data-i18n="nav_dashboard">Dashboard</a></li>
+                    <li><a href="#contact" class="nav-item context-hook nav-anchor" data-target="#contact" data-i18n="nav_contact">Contact</a></li>
+                    <li><a href="#socials" class="nav-item context-hook nav-anchor" data-target="#socials" data-i18n="nav_socials">Socials</a></li>
+                    <li><a href="#login" class="nav-item context-hook nav-anchor" data-target="#login" data-i18n="nav_login">Log In</a></li>
                 </ul>
 
                 <div class="sidebar-footer">
@@ -402,11 +263,11 @@
         <section class="hero-section" id="home">
             <div class="hero-layout">
                 <div class="hero-typography">
-                    <h1>RAW <span class="highlight">ESSENTIALS</span></h1>
-                    <p>An intelligent ecosystem built with calculated digital geometry. Stripped of superficiality. Programmed for standard hardware operational performance.</p>
+                    <h1><span data-i18n="hero_raw">RAW</span> <span class="highlight" data-i18n="hero_essentials">ESSENTIALS</span></h1>
+                    <p data-i18n="hero_desc">An intelligent ecosystem built with calculated digital geometry. Stripped of superficiality. Programmed for standard hardware operational performance.</p>
                 </div>
                 <div class="hero-display-box context-hook">
-                    <span class="telemetry-tag">Product Module // H-01</span>
+                    <span class="telemetry-tag" data-i18n="hero_tag">Product Module // H-01</span>
                     <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop" alt="Hardware Sample">
                 </div>
             </div>
@@ -416,9 +277,9 @@
             <div class="feature-container">
                 <div class="feature-row structural-reveal">
                     <div class="feature-text">
-                        <span class="feature-meta">01 // THE ARCHITECTURE</span>
-                        <h2>PURE MASK<br>TECHNOLOGY.</h2>
-                        <p>We use zero variable curves. Every intersection is plotted on a strict grid setup, resulting in sharp architectural layouts engineered completely outside standard templating constraints.</p>
+                        <span class="feature-meta" data-i18n="feat1_meta">01 // THE ARCHITECTURE</span>
+                        <h2 data-i18n="feat1_title">PURE MASK<br>TECHNOLOGY.</h2>
+                        <p data-i18n="feat1_desc">We use zero variable curves. Every intersection is plotted on a strict grid setup, resulting in sharp architectural layouts engineered completely outside standard templating constraints.</p>
                     </div>
                     <div class="feature-visual context-hook">
                         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop" alt="Item Alpha">
@@ -427,9 +288,9 @@
 
                 <div class="feature-row reverse structural-reveal">
                     <div class="feature-text">
-                        <span class="feature-meta">02 // VERIFICATION ROUTINE</span>
-                        <h2 style="color: var(--accent-red);">100%<br>OPERATIONAL.</h2>
-                        <p>Every build iteration is systematically balanced against real hardware requirements to ensure clean utility output. High rendering execution speeds across global nodes.</p>
+                        <span class="feature-meta" data-i18n="feat2_meta">02 // VERIFICATION ROUTINE</span>
+                        <h2 style="color: var(--accent-red);" data-i18n="feat2_title">100%<br>OPERATIONAL.</h2>
+                        <p data-i18n="feat2_desc">Every build iteration is systematically balanced against real hardware requirements to ensure clean utility output. High rendering execution speeds across global nodes.</p>
                     </div>
                     <div class="feature-visual context-hook">
                         <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop" alt="Item Beta">
@@ -440,8 +301,8 @@
 
         <section class="inventory-section" id="products">
             <div class="section-header">
-                <h3>THE ARCHIVE</h3>
-                <span style="font-size:12px; color: var(--text-muted);">SHOWING 3 OF 3 INITIAL RELEASES</span>
+                <h3 data-i18n="archive_title">THE ARCHIVE</h3>
+                <span style="font-size:12px; color: var(--text-muted);" data-i18n="archive_meta">SHOWING 3 OF 3 INITIAL RELEASES</span>
             </div>
             
             <div class="catalog-grid">
@@ -452,7 +313,7 @@
                     <div class="item-footer">
                         <div>
                             <span class="item-category">SYS-MODULE // 001</span>
-                            <div class="item-title">AURA CHROME RUNNER</div>
+                            <div class="item-title" data-i18n="prod1_name">AURA CHROME RUNNER</div>
                         </div>
                         <span class="item-price">₹8,999</span>
                     </div>
@@ -465,7 +326,7 @@
                     <div class="item-footer">
                         <div>
                             <span class="item-category">SYS-MODULE // 002</span>
-                            <div class="item-title">HORIZON GRID TIMEPIECE</div>
+                            <div class="item-title" data-i18n="prod2_name">HORIZON GRID TIMEPIECE</div>
                         </div>
                         <span class="item-price">₹14,500</span>
                     </div>
@@ -478,11 +339,62 @@
                     <div class="item-footer">
                         <div>
                             <span class="item-category">SYS-MODULE // 003</span>
-                            <div class="item-title">MONO AUDIO RETICLE</div>
+                            <div class="item-title" data-i18n="prod3_name">MONO AUDIO RETICLE</div>
                         </div>
                         <span class="item-price">₹4,200</span>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section class="footer-section" id="contact">
+            <div class="accordion-container">
+                
+                <div class="accordion-item">
+                    <button class="accordion-header context-hook" onclick="toggleAccordion(this)">
+                        <span data-i18n="acc_about">ABOUT</span>
+                        <span class="icon">i.</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="accordion-inner">
+                            <p class="manifesto-text" data-i18n="acc_about_desc">HUMMID MANIFESTO: We sift through the noise of the internet to bring you viral products that actually matter. An aesthetic lifestyle shouldn't compromise on quality. Every drop is strictly vetted for performance, durability, and a premium hardware feel. Engineered for the tech-forward.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header context-hook" onclick="toggleAccordion(this)">
+                        <span data-i18n="acc_support">SUPPORT</span>
+                        <span class="icon">?</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="accordion-inner">
+                            <form class="support-form" onsubmit="event.preventDefault()">
+                                <div class="form-row">
+                                    <input type="text" placeholder="Username" data-i18n-placeholder="placeholder_user" class="context-hook">
+                                    <input type="email" placeholder="Email Address" data-i18n-placeholder="placeholder_email" class="context-hook">
+                                </div>
+                                <textarea rows="5" placeholder="Describe your query..." data-i18n-placeholder="placeholder_query" class="context-hook"></textarea>
+                                <button type="submit" class="support-btn context-hook" data-i18n="btn_submit">SUBMIT</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header context-hook" onclick="toggleAccordion(this)">
+                        <span data-i18n="acc_lang_label" id="current-lang-display">LANGUAGE: EN</span>
+                        <span class="icon icon-arrow">v</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="accordion-inner lang-options">
+                            <button class="lang-btn context-hook active" onclick="setLanguage('en')">ENGLISH</button>
+                            <button class="lang-btn context-hook" onclick="setLanguage('hi')">HINDI</button>
+                            <button class="lang-btn context-hook" onclick="setLanguage('ml')">MALAYALAM</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
     </div>
@@ -500,13 +412,15 @@
         const rootElement = document.documentElement;
 
         themeToggleBtn.addEventListener('click', () => {
-            if (rootElement.getAttribute('data-theme') === 'light') {
+            const currentTheme = rootElement.getAttribute('data-theme');
+            if (currentTheme === 'light') {
                 rootElement.removeAttribute('data-theme'); 
-                themeToggleBtn.textContent = '[ LIGHT ]';
+                themeToggleBtn.innerHTML = '<span data-i18n="theme_light">[ LIGHT ]</span>';
             } else {
                 rootElement.setAttribute('data-theme', 'light');
-                themeToggleBtn.textContent = '[ DARK ]';
+                themeToggleBtn.innerHTML = '<span data-i18n="theme_dark">[ DARK ]</span>';
             }
+            translatePage(); // Re-apply translation to the button text
         });
 
         /* -------------------------
@@ -516,7 +430,7 @@
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
-        const spacing = 45; // Size of the Nothing OS Dot Matrix
+        const spacing = 45; 
 
         function initGrid() {
             width = window.innerWidth;
@@ -527,10 +441,7 @@
             
             for (let x = 0; x <= width + spacing; x += spacing) {
                 for (let y = 0; y <= height + spacing; y += spacing) {
-                    particles.push({
-                        baseX: x, baseY: y,
-                        x: x, y: y,
-                    });
+                    particles.push({ baseX: x, baseY: y, x: x, y: y });
                 }
             }
         }
@@ -539,19 +450,17 @@
             ctx.clearRect(0, 0, width, height);
             const isLight = rootElement.getAttribute('data-theme') === 'light';
             const baseColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-            const activeColor = isLight ? 'rgba(0, 0, 0, 0.8)' : 'rgba(191, 3, 3, 0.9)'; // Dark pop or Stark Red
+            const activeColor = isLight ? 'rgba(0, 0, 0, 0.8)' : 'rgba(191, 3, 3, 0.9)'; 
 
             particles.forEach(p => {
                 const dx = mouseX - p.x;
                 const dy = mouseY - p.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                const maxDist = 180; // Repulsion radius
+                const maxDist = 180; 
                 
                 if (dist < maxDist) {
-                    // Force pushes dots away from mouse
                     const force = (maxDist - dist) / maxDist;
                     const angle = Math.atan2(dy, dx);
-                    
                     const targetX = p.baseX - Math.cos(angle) * force * 50;
                     const targetY = p.baseY - Math.sin(angle) * force * 50;
                     
@@ -560,14 +469,11 @@
                     
                     ctx.fillStyle = activeColor;
                     ctx.beginPath();
-                    // Dots grow slightly when pushed
                     ctx.arc(p.x, p.y, 2 + (force * 1.5), 0, Math.PI * 2);
                     ctx.fill();
                 } else {
-                    // Spring back to base position
                     p.x += (p.baseX - p.x) * 0.1;
                     p.y += (p.baseY - p.y) * 0.1;
-                    
                     ctx.fillStyle = baseColor;
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
@@ -577,9 +483,7 @@
             requestAnimationFrame(animateGrid);
         }
 
-        initGrid();
-        animateGrid();
-        window.addEventListener('resize', initGrid);
+        initGrid(); animateGrid(); window.addEventListener('resize', initGrid);
 
         /* -------------------------
            DATA RIBBON CURSOR LOGIC
@@ -589,45 +493,33 @@
         const cursorTrails = gsap.utils.toArray('.custom-cursor-trail');
 
         gsap.set([cursorDot, cursorPulse, ...cursorTrails], { xPercent: -50, yPercent: -50 });
-
-        const hoverPulseAnim = gsap.fromTo(cursorPulse, 
-            { scale: 0.5, opacity: 1, borderWidth: 2 },
-            { scale: 2.2, opacity: 0, borderWidth: 0, duration: 1.2, repeat: -1, ease: "power2.out", paused: true }
-        );
+        const hoverPulseAnim = gsap.fromTo(cursorPulse, { scale: 0.5, opacity: 1, borderWidth: 2 }, { scale: 2.2, opacity: 0, borderWidth: 0, duration: 1.2, repeat: -1, ease: "power2.out", paused: true });
 
         window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-
-            // Track cursor dot
+            mouseX = e.clientX; mouseY = e.clientY;
             gsap.to([cursorDot, cursorPulse], { x: mouseX, y: mouseY, duration: 0 });
-            
-            // Track cursor tail
             cursorTrails.forEach((trail, index) => {
-                gsap.to(trail, {
-                    x: mouseX, y: mouseY,
-                    duration: 0.15 + (index * 0.12),
-                    ease: "power2.out", overwrite: "auto" 
-                });
+                gsap.to(trail, { x: mouseX, y: mouseY, duration: 0.15 + (index * 0.12), ease: "power2.out", overwrite: "auto" });
             });
         });
 
-        document.querySelectorAll('.context-hook').forEach(element => {
-            element.addEventListener('mouseenter', () => {
-                gsap.to(cursorTrails, { opacity: 0, duration: 0.2, overwrite: "auto" });
-                hoverPulseAnim.restart();
-            });
-            
-            element.addEventListener('mouseleave', () => {
-                hoverPulseAnim.pause();
-                gsap.to(cursorPulse, { opacity: 0, duration: 0.2 });
-
-                cursorTrails.forEach(trail => {
-                    const originalOpacity = trail.getAttribute('data-opacity');
-                    gsap.to(trail, { opacity: originalOpacity, duration: 0.3, overwrite: "auto" });
+        function bindCursorHooks() {
+            document.querySelectorAll('.context-hook').forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    gsap.to(cursorTrails, { opacity: 0, duration: 0.2, overwrite: "auto" });
+                    hoverPulseAnim.restart();
+                });
+                element.addEventListener('mouseleave', () => {
+                    hoverPulseAnim.pause();
+                    gsap.to(cursorPulse, { opacity: 0, duration: 0.2 });
+                    cursorTrails.forEach(trail => {
+                        const originalOpacity = trail.getAttribute('data-opacity');
+                        gsap.to(trail, { opacity: originalOpacity, duration: 0.3, overwrite: "auto" });
+                    });
                 });
             });
-        });
+        }
+        bindCursorHooks();
 
         /* -------------------------
            NAVIGATION MODULE LOGIC
@@ -643,11 +535,8 @@
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 navOverlay.classList.remove('active');
-                
                 const targetElement = document.querySelector(this.getAttribute('data-target'));
-                if (targetElement) {
-                    gsap.to(window, { duration: 1.4, scrollTo: targetElement, ease: "power4.inOut" });
-                }
+                if (targetElement) { gsap.to(window, { duration: 1.4, scrollTo: targetElement, ease: "power4.inOut" }); }
             });
         });
 
@@ -658,54 +547,135 @@
             const visual = row.querySelector('.feature-visual');
             const img = visual.querySelector('img');
             const text = row.querySelector('.feature-text');
+            let tl = gsap.timeline({ scrollTrigger: { trigger: row, start: "top 75%", toggleActions: "play none none reverse" } });
 
-            let tl = gsap.timeline({
-                scrollTrigger: { trigger: row, start: "top 75%", toggleActions: "play none none reverse" }
-            });
-
-            tl.fromTo(visual, 
-                { height: 0, borderColor: "var(--accent-red)", borderWidth: 2 },
-                { height: 400, duration: 0.6, ease: "power2.inOut" }
-            )
-            .fromTo(img, 
-                { opacity: 0, scale: 1.1 },
-                { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }, "-=0.1" 
-            )
-            .to(visual, { borderColor: "var(--border-color)", borderWidth: 1, duration: 0.4, clearProps: "borderWidth" }, "-=0.2")
-            .fromTo(text, 
-                { opacity: 0, x: row.classList.contains('reverse') ? 30 : -30 },
-                { opacity: 1, x: 0, duration: 0.5, ease: "power4.out" }, "-=0.4"
-            );
+            tl.fromTo(visual, { height: 0, borderColor: "var(--accent-red)", borderWidth: 2 }, { height: 400, duration: 0.6, ease: "power2.inOut" })
+              .fromTo(img, { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }, "-=0.1" )
+              .to(visual, { borderColor: "var(--border-color)", borderWidth: 1, duration: 0.4, clearProps: "borderWidth" }, "-=0.2")
+              .fromTo(text, { opacity: 0, x: row.classList.contains('reverse') ? 30 : -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power4.out" }, "-=0.4");
         });
 
         gsap.utils.toArray('.structural-reveal-card').forEach((item, index) => {
             const visual = item.querySelector('.item-visual');
             const img = visual.querySelector('img');
             const footer = item.querySelector('.item-footer');
+            let tl = gsap.timeline({ scrollTrigger: { trigger: item, start: "top 85%", toggleActions: "play none none reverse" }, delay: index * 0.15 });
 
-            let tl = gsap.timeline({
-                scrollTrigger: { trigger: item, start: "top 85%", toggleActions: "play none none reverse" },
-                delay: index * 0.15 
+            tl.fromTo(visual, { height: 0, borderColor: "var(--accent-red)", borderWidth: 2 }, { height: 300, duration: 0.5, ease: "power2.inOut" })
+              .fromTo(img, { opacity: 0, scale: 1.15 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, "-=0.1" )
+              .fromTo(footer, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, "-=0.2" )
+              .to(visual, { borderColor: "var(--border-color)", borderWidth: 1, duration: 0.3, clearProps: "all" }, "-=0.3")
+              .fromTo(item, { borderColor: "transparent", backgroundColor: "transparent" }, { borderColor: "var(--border-color)", backgroundColor: "var(--bg-base)", duration: 0.3, clearProps: "all" }, "-=0.3");
+        });
+
+        /* -------------------------
+           ACCORDION LOGIC
+        ------------------------- */
+        function toggleAccordion(button) {
+            const item = button.parentElement;
+            const content = item.querySelector('.accordion-content');
+            const inner = item.querySelector('.accordion-inner');
+            
+            // Close all others
+            document.querySelectorAll('.accordion-item').forEach(otherItem => {
+                if(otherItem !== item) {
+                    otherItem.classList.remove('active');
+                    gsap.to(otherItem.querySelector('.accordion-content'), { height: 0, duration: 0.4, ease: "power2.inOut" });
+                }
             });
 
-            tl.fromTo(visual,
-                { height: 0, borderColor: "var(--accent-red)", borderWidth: 2 },
-                { height: 300, duration: 0.5, ease: "power2.inOut" }
-            )
-            .fromTo(img, 
-                { opacity: 0, scale: 1.15 },
-                { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, "-=0.1"
-            )
-            .fromTo(footer, 
-                { opacity: 0, y: 10 },
-                { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, "-=0.2"
-            )
-            .to(visual, { borderColor: "var(--border-color)", borderWidth: 1, duration: 0.3, clearProps: "all" }, "-=0.3")
-            .fromTo(item, 
-                { borderColor: "transparent", backgroundColor: "transparent" },
-                { borderColor: "var(--border-color)", backgroundColor: "var(--bg-base)", duration: 0.3, clearProps: "all" }, "-=0.3"
-            );
-        });
+            if (item.classList.contains('active')) {
+                item.classList.remove('active');
+                gsap.to(content, { height: 0, duration: 0.4, ease: "power2.inOut" });
+            } else {
+                item.classList.add('active');
+                // Calculate natural height for smooth GSAP animation
+                gsap.set(content, { height: "auto" });
+                let targetHeight = content.offsetHeight;
+                gsap.set(content, { height: 0 });
+                gsap.to(content, { height: targetHeight, duration: 0.4, ease: "power2.inOut", onComplete: () => { gsap.set(content, { height: "auto" }); } });
+            }
+        }
+
+        /* -------------------------
+           LANGUAGE TRANSLATION ENGINE
+        ------------------------- */
+        let currentLanguage = 'en';
+
+        const i18n = {
+            en: {
+                theme_light: "[ LIGHT ]", theme_dark: "[ DARK ]", close_btn: "Close [X]",
+                nav_products: "Products", nav_dashboard: "Dashboard", nav_contact: "Contact", nav_socials: "Socials", nav_login: "Log In",
+                hero_raw: "RAW", hero_essentials: "ESSENTIALS", hero_tag: "Product Module // H-01",
+                hero_desc: "An intelligent ecosystem built with calculated digital geometry. Stripped of superficiality. Programmed for standard hardware operational performance.",
+                feat1_meta: "01 // THE ARCHITECTURE", feat1_title: "PURE MASK<br>TECHNOLOGY.", feat1_desc: "We use zero variable curves. Every intersection is plotted on a strict grid setup, resulting in sharp architectural layouts engineered completely outside standard templating constraints.",
+                feat2_meta: "02 // VERIFICATION ROUTINE", feat2_title: "100%<br>OPERATIONAL.", feat2_desc: "Every build iteration is systematically balanced against real hardware requirements to ensure clean utility output. High rendering execution speeds across global nodes.",
+                archive_title: "THE ARCHIVE", archive_meta: "SHOWING 3 OF 3 INITIAL RELEASES",
+                prod1_name: "AURA CHROME RUNNER", prod2_name: "HORIZON GRID TIMEPIECE", prod3_name: "MONO AUDIO RETICLE",
+                acc_about: "ABOUT", acc_support: "SUPPORT", acc_lang_label: "LANGUAGE: EN",
+                acc_about_desc: "HUMMID MANIFESTO: We sift through the noise of the internet to bring you viral products that actually matter. An aesthetic lifestyle shouldn't compromise on quality. Every drop is strictly vetted for performance, durability, and a premium hardware feel. Engineered for the tech-forward.",
+                placeholder_user: "Username", placeholder_email: "Email Address", placeholder_query: "Describe your query...", btn_submit: "SUBMIT"
+            },
+            hi: {
+                theme_light: "[ प्रकाश ]", theme_dark: "[ अंधेरा ]", close_btn: "बंद करें [X]",
+                nav_products: "उत्पाद", nav_dashboard: "डैशबोर्ड", nav_contact: "संपर्क", nav_socials: "सामाजिक", nav_login: "लॉग इन",
+                hero_raw: "कच्चा", hero_essentials: "अनिवार्य", hero_tag: "उत्पाद मॉड्यूल // एच-01",
+                hero_desc: "गणना की गई डिजिटल ज्यामिति के साथ निर्मित एक बुद्धिमान पारिस्थितिकी तंत्र। सतहीपन से मुक्त। मानक हार्डवेयर परिचालन प्रदर्शन के लिए प्रोग्राम किया गया।",
+                feat1_meta: "01 // वास्तुकला", feat1_title: "शुद्ध मास्क<br>प्रौद्योगिकी।", feat1_desc: "हम शून्य चर वक्रों का उपयोग करते हैं। हर चौराहा एक सख्त ग्रिड सेटअप पर तैयार किया गया है, जिसके परिणामस्वरूप मानक टेम्पलेटिंग बाधाओं के बाहर पूरी तरह से तेज वास्तुशिल्प लेआउट तैयार किए गए हैं।",
+                feat2_meta: "02 // सत्यापन दिनचर्या", feat2_title: "100%<br>परिचालन।", feat2_desc: "साफ उपयोगिता आउटपुट सुनिश्चित करने के लिए हर बिल्ड पुनरावृत्ति को वास्तविक हार्डवेयर आवश्यकताओं के खिलाफ व्यवस्थित रूप से संतुलित किया जाता है। वैश्विक नोड्स में उच्च रेंडरिंग निष्पादन गति।",
+                archive_title: "संग्रह", archive_meta: "3 में से 3 प्रारंभिक रिलीज़ दिखा रहा है",
+                prod1_name: "औरा क्रोम रनर", prod2_name: "होराइजन ग्रिड टाइमपीस", prod3_name: "मोनो ऑडियो रेटिकल",
+                acc_about: "हमारे बारे में", acc_support: "सहायता", acc_lang_label: "भाषा: HI",
+                acc_about_desc: "हममिड मेनिफेस्टो: हम आपको वास्तव में मायने रखने वाले वायरल उत्पाद लाने के लिए इंटरनेट के शोर को छानते हैं। एक सौंदर्य जीवन शैली को गुणवत्ता से समझौता नहीं करना चाहिए। प्रदर्शन, स्थायित्व और एक प्रीमियम हार्डवेयर अनुभव के लिए हर ड्रॉप की कड़ाई से जांच की जाती है। टेक-फॉरवर्ड के लिए इंजीनियर किया गया।",
+                placeholder_user: "उपयोगकर्ता नाम", placeholder_email: "ईमेल पता", placeholder_query: "अपनी समस्या का वर्णन करें...", btn_submit: "जमा करें"
+            },
+            ml: {
+                theme_light: "[ പ്രകാശം ]", theme_dark: "[ ഇരുട്ട് ]", close_btn: "അടയ്ക്കുക [X]",
+                nav_products: "ഉൽപ്പന്നങ്ങൾ", nav_dashboard: "ഡാഷ്ബോർഡ്", nav_contact: "ബന്ധപ്പെടുക", nav_socials: "സോഷ്യൽസ്", nav_login: "ലോഗിൻ",
+                hero_raw: "റോ", hero_essentials: "എസൻഷ്യൽസ്", hero_tag: "പ്രൊഡക്റ്റ് മൊഡ്യൂൾ // എച്ച്-01",
+                hero_desc: "കണക്കാക്കിയ ഡിജിറ്റൽ ജ്യാമിതി ഉപയോഗിച്ച് നിർമ്മിച്ച ഒരു ബുദ്ധിമാനായ ഇക്കോസിസ്റ്റം. ഉപരിപ്ലവതയിൽ നിന്ന് മുക്തമാണ്. സ്റ്റാൻഡേർഡ് ഹാർഡ്‌വെയർ പ്രവർത്തന പ്രകടനത്തിനായി പ്രോഗ്രാം ചെയ്‌തു.",
+                feat1_meta: "01 // ആർക്കിടെക്ചർ", feat1_title: "പ്യുവർ മാസ്ക്<br>ടെക്നോളജി.", feat1_desc: "ഞങ്ങൾ സീറോ വേരിയബിൾ കർവുകൾ ഉപയോഗിക്കുന്നു. എല്ലാ കവലകളും കർശനമായ ഗ്രിഡ് സജ്ജീകരണത്തിൽ പ്ലോട്ട് ചെയ്തിരിക്കുന്നു, ഇത് സ്റ്റാൻഡേർഡ് ടെംപ്ലേറ്റിംഗ് നിയന്ത്രണങ്ങൾക്ക് പുറത്ത് പൂർണ്ണമായും എഞ്ചിനീയറിംഗ് ചെയ്ത മൂർച്ചയുള്ള വാസ്തുവിദ്യാ ലേഔട്ടുകൾക്ക് കാരണമാകുന്നു.",
+                feat2_meta: "02 // സ്ഥിരീകരണ ദിനചര്യ", feat2_title: "100%<br>പ്രവർത്തനം.", feat2_desc: "വൃത്തിയുള്ള യൂട്ടിലിറ്റി ഔട്ട്‌പുട്ട് ഉറപ്പാക്കാൻ എല്ലാ ബിൽഡ് ആവർത്തനങ്ങളും യഥാർത്ഥ ഹാർഡ്‌വെയർ ആവശ്യകതകൾക്കെതിരെ ചിട്ടയായി സന്തുലിതമാക്കുന്നു. ഗ്ലോബൽ നോഡുകളിലുടനീളം ഉയർന്ന റെൻഡറിംഗ് നിർവ്വഹണ വേഗത.",
+                archive_title: "ശേഖരം", archive_meta: "3-ൽ 3 പ്രാരംഭ റിലീസുകൾ കാണിക്കുന്നു",
+                prod1_name: "ഓറ ക്രോം റണ്ണർ", prod2_name: "ഹൊറൈസൺ ഗ്രിഡ് ടൈംപീസ്", prod3_name: "മോണോ ഓഡിയോ റെറ്റിക്കിൾ",
+                acc_about: "ഞങ്ങളെക്കുറിച്ച്", acc_support: "പിന്തുണ", acc_lang_label: "ഭാഷ: ML",
+                acc_about_desc: "ഹംമിഡ് മാനിഫെസ്റ്റോ: യഥാർത്ഥത്തിൽ പ്രാധാന്യമുള്ള വൈറൽ ഉൽപ്പന്നങ്ങൾ നിങ്ങൾക്ക് കൊണ്ടുവരാൻ ഞങ്ങൾ ഇൻ്റർനെറ്റിൻ്റെ ശബ്ദത്തിലൂടെ അരിച്ചെടുക്കുന്നു. ഒരു സൗന്ദര്യാത്മക ജീവിതശൈലി ഗുണനിലവാരത്തിൽ വിട്ടുവീഴ്ച ചെയ്യരുത്. പ്രകടനം, ഈട്, പ്രീമിയം ഹാർഡ്‌വെയർ ഫീൽ എന്നിവയ്‌ക്കായി ഓരോ തുള്ളിയും കർശനമായി പരിശോധിക്കുന്നു. ടെക് ഫോർവേഡിനായി എഞ്ചിനീയറിംഗ് ചെയ്തു.",
+                placeholder_user: "ഉപയോക്തൃനാമം", placeholder_email: "ഇമെയിൽ വിലാസം", placeholder_query: "നിങ്ങളുടെ പ്രശ്നം വിശദീകരിക്കുക...", btn_submit: "സമർപ്പിക്കുക"
+            }
+        };
+
+        function translatePage() {
+            // Translate Inner HTML text
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (i18n[currentLanguage][key]) {
+                    element.innerHTML = i18n[currentLanguage][key];
+                }
+            });
+
+            // Translate Input Placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (i18n[currentLanguage][key]) {
+                    element.setAttribute('placeholder', i18n[currentLanguage][key]);
+                }
+            });
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update Active Buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                }
+            });
+
+            translatePage();
+        }
+
     </script>
 </body>
 </html>
