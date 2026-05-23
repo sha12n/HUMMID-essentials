@@ -71,7 +71,7 @@
         }
 
         /* ==========================================================================
-           2. JUSTICE ARC AMBIENT BACKGROUND & ANTIGRAVITY GRID
+           2. AMBIENT BACKGROUND & ANTIGRAVITY GRID
            ========================================================================== */
         .ambient-background { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
         .ambient-orb { position: absolute; border-radius: 50%; filter: blur(80px); transition: background-color 0.5s ease; }
@@ -87,7 +87,7 @@
         .content-wrapper { position: relative; z-index: 10; }
 
         /* ==========================================================================
-           3. HARDWARE CURSOR (DATA RIBBON)
+           3. HARDWARE CURSOR
            ========================================================================== */
         .custom-cursor-dot { width: 6px; height: 6px; background-color: var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999; transition: background-color 0.3s ease; }
         .custom-cursor-trail { width: 4px; height: 4px; background-color: var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99998; transition: background-color 0.3s ease; }
@@ -169,7 +169,7 @@
         .item-price { font-size: 16px; color: var(--accent-red); font-weight: 700; }
 
         /* ==========================================================================
-           7. PREMIUM ACCORDION FOOTER
+           7. UTILITY FOOTER SYSTEM
            ========================================================================== */
         .footer-section { padding: 100px 40px; max-width: 800px; margin: 0 auto; }
         
@@ -183,8 +183,38 @@
         .accordion-item.active .accordion-content { height: auto; }
         .accordion-item.active .icon-arrow { transform: rotate(180deg); }
 
-        /* About Panel Content */
-        .manifesto-text { color: var(--text-muted); font-size: 14px; line-height: 1.8; margin-top: 10px; }
+        /* Permanent Statement Card Style (About Section Restored) */
+        .permanent-statement-card {
+            border: 1px solid var(--border-color);
+            background: var(--acc-bg);
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .manifesto-large-text {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 2;
+            color: var(--text-dark);
+            text-align: justify;
+            word-break: break-word;
+        }
+
+        /* Large Editorial Drop-Cap (Restored to Static Layer Layout) */
+        .manifesto-large-text::first-letter {
+            font-size: 70px;
+            font-weight: 700;
+            float: left;
+            line-height: 0.7;
+            padding-right: 15px;
+            margin-top: 5px;
+            color: var(--accent-red);
+        }
         
         /* Support Panel Form */
         .support-form { display: grid; gap: 15px; margin-top: 10px; }
@@ -350,16 +380,10 @@
         <section class="footer-section" id="contact">
             <div class="accordion-container">
                 
-                <div class="accordion-item">
-                    <button class="accordion-header context-hook" onclick="toggleAccordion(this)">
-                        <span data-i18n="acc_about">ABOUT</span>
-                        <span class="icon">i.</span>
-                    </button>
-                    <div class="accordion-content">
-                        <div class="accordion-inner">
-                            <p class="manifesto-text" data-i18n="acc_about_desc">HUMMID MANIFESTO: We sift through the noise of the internet to bring you viral products that actually matter. An aesthetic lifestyle shouldn't compromise on quality. Every drop is strictly vetted for performance, durability, and a premium hardware feel. Engineered for the tech-forward.</p>
-                        </div>
-                    </div>
+                <div class="permanent-statement-card context-hook" id="about-statement-trigger">
+                    <p class="manifesto-large-text" data-i18n="acc_about_desc">
+                        HUMMID MANIFESTO: We sift through the noise of the internet to bring you viral products that actually matter. An aesthetic lifestyle shouldn't compromise on quality. Every drop is strictly vetted for performance, durability, and a premium hardware feel. Engineered for the tech-forward.
+                    </p>
                 </div>
 
                 <div class="accordion-item">
@@ -369,13 +393,13 @@
                     </button>
                     <div class="accordion-content">
                         <div class="accordion-inner">
-                            <form class="support-form" onsubmit="event.preventDefault()">
+                            <form class="support-form" id="support-form">
                                 <div class="form-row">
-                                    <input type="text" placeholder="Username" data-i18n-placeholder="placeholder_user" class="context-hook">
-                                    <input type="email" placeholder="Email Address" data-i18n-placeholder="placeholder_email" class="context-hook">
+                                    <input type="text" name="username" placeholder="Username" data-i18n-placeholder="placeholder_user" class="context-hook" required>
+                                    <input type="email" name="email" placeholder="Email Address" data-i18n-placeholder="placeholder_email" class="context-hook" required>
                                 </div>
-                                <textarea rows="5" placeholder="Describe your query..." data-i18n-placeholder="placeholder_query" class="context-hook"></textarea>
-                                <button type="submit" class="support-btn context-hook" data-i18n="btn_submit">SUBMIT</button>
+                                <textarea name="query" rows="5" placeholder="Describe your query..." data-i18n-placeholder="placeholder_query" class="context-hook" required></textarea>
+                                <button type="submit" class="support-btn context-hook" data-i18n="btn_submit" id="submit-btn">SUBMIT</button>
                             </form>
                         </div>
                     </div>
@@ -388,9 +412,9 @@
                     </button>
                     <div class="accordion-content">
                         <div class="accordion-inner lang-options">
-                            <button class="lang-btn context-hook active" onclick="setLanguage('en')">ENGLISH</button>
-                            <button class="lang-btn context-hook" onclick="setLanguage('hi')">HINDI</button>
-                            <button class="lang-btn context-hook" onclick="setLanguage('ml')">MALAYALAM</button>
+                            <button class="lang-btn context-hook active" data-lang="en" onclick="setLanguage('en')">ENGLISH</button>
+                            <button class="lang-btn context-hook" data-lang="hi" onclick="setLanguage('hi')">HINDI</button>
+                            <button class="lang-btn context-hook" data-lang="ml" onclick="setLanguage('ml')">MALAYALAM</button>
                         </div>
                     </div>
                 </div>
@@ -420,7 +444,7 @@
                 rootElement.setAttribute('data-theme', 'light');
                 themeToggleBtn.innerHTML = '<span data-i18n="theme_dark">[ DARK ]</span>';
             }
-            translatePage(); // Re-apply translation to the button text
+            translatePage(); 
         });
 
         /* -------------------------
@@ -541,7 +565,7 @@
         });
 
         /* -------------------------
-           STRUCTURAL DRAW (GSAP Sequences)
+           STRUCTURAL DRAW SCROLL SEQUENCE
         ------------------------- */
         gsap.utils.toArray('.structural-reveal').forEach(row => {
             const visual = row.querySelector('.feature-visual');
@@ -569,14 +593,23 @@
         });
 
         /* -------------------------
-           ACCORDION LOGIC
+           ABOUT BORDER HOVER INTENSITY TUNING
+        ------------------------- */
+        const aboutCard = document.getElementById('about-statement-trigger');
+        aboutCard.addEventListener('mouseenter', () => {
+            gsap.to(aboutCard, { borderColor: "var(--accent-red)", borderWidth: "2px", duration: 0.4, ease: "power2.out" });
+        });
+        aboutCard.addEventListener('mouseleave', () => {
+            gsap.to(aboutCard, { borderColor: "var(--border-color)", borderWidth: "1px", duration: 0.4, ease: "power2.out" });
+        });
+
+        /* -------------------------
+           ACCORDION CONTENT CONTROLLER
         ------------------------- */
         function toggleAccordion(button) {
             const item = button.parentElement;
             const content = item.querySelector('.accordion-content');
-            const inner = item.querySelector('.accordion-inner');
             
-            // Close all others
             document.querySelectorAll('.accordion-item').forEach(otherItem => {
                 if(otherItem !== item) {
                     otherItem.classList.remove('active');
@@ -589,7 +622,6 @@
                 gsap.to(content, { height: 0, duration: 0.4, ease: "power2.inOut" });
             } else {
                 item.classList.add('active');
-                // Calculate natural height for smooth GSAP animation
                 gsap.set(content, { height: "auto" });
                 let targetHeight = content.offsetHeight;
                 gsap.set(content, { height: 0 });
@@ -598,7 +630,46 @@
         }
 
         /* -------------------------
-           LANGUAGE TRANSLATION ENGINE
+           FORMSPREE AJAX SUBMISSION LOGIC
+        ------------------------- */
+        const supportForm = document.getElementById('support-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        supportForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'SENDING...'; // Premium loading state
+            
+            const formData = new FormData(supportForm);
+
+            try {
+                const response = await fetch('https://formspree.io/f/xnjrzvwe', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    submitBtn.innerHTML = 'SENT SUCCESSFULLY';
+                    submitBtn.style.color = 'var(--accent-red)';
+                    supportForm.reset();
+                    setTimeout(() => { 
+                        submitBtn.innerHTML = originalText; 
+                        submitBtn.style.color = 'var(--text-dark)';
+                    }, 4000);
+                } else {
+                    submitBtn.innerHTML = 'ERROR. TRY AGAIN.';
+                    setTimeout(() => { submitBtn.innerHTML = originalText; }, 4000);
+                }
+            } catch (error) {
+                submitBtn.innerHTML = 'ERROR. TRY AGAIN.';
+                setTimeout(() => { submitBtn.innerHTML = originalText; }, 4000);
+            }
+        });
+
+        /* -------------------------
+           LANGUAGE TRANSLATION DICTIONARY (i18n)
         ------------------------- */
         let currentLanguage = 'en';
 
@@ -612,7 +683,7 @@
                 feat2_meta: "02 // VERIFICATION ROUTINE", feat2_title: "100%<br>OPERATIONAL.", feat2_desc: "Every build iteration is systematically balanced against real hardware requirements to ensure clean utility output. High rendering execution speeds across global nodes.",
                 archive_title: "THE ARCHIVE", archive_meta: "SHOWING 3 OF 3 INITIAL RELEASES",
                 prod1_name: "AURA CHROME RUNNER", prod2_name: "HORIZON GRID TIMEPIECE", prod3_name: "MONO AUDIO RETICLE",
-                acc_about: "ABOUT", acc_support: "SUPPORT", acc_lang_label: "LANGUAGE: EN",
+                acc_support: "SUPPORT", acc_lang_label: "LANGUAGE: EN",
                 acc_about_desc: "HUMMID MANIFESTO: We sift through the noise of the internet to bring you viral products that actually matter. An aesthetic lifestyle shouldn't compromise on quality. Every drop is strictly vetted for performance, durability, and a premium hardware feel. Engineered for the tech-forward.",
                 placeholder_user: "Username", placeholder_email: "Email Address", placeholder_query: "Describe your query...", btn_submit: "SUBMIT"
             },
@@ -624,9 +695,9 @@
                 feat1_meta: "01 // वास्तुकला", feat1_title: "शुद्ध मास्क<br>प्रौद्योगिकी।", feat1_desc: "हम शून्य चर वक्रों का उपयोग करते हैं। हर चौराहा एक सख्त ग्रिड सेटअप पर तैयार किया गया है, जिसके परिणामस्वरूप मानक टेम्पलेटिंग बाधाओं के बाहर पूरी तरह से तेज वास्तुशिल्प लेआउट तैयार किए गए हैं।",
                 feat2_meta: "02 // सत्यापन दिनचर्या", feat2_title: "100%<br>परिचालन।", feat2_desc: "साफ उपयोगिता आउटपुट सुनिश्चित करने के लिए हर बिल्ड पुनरावृत्ति को वास्तविक हार्डवेयर आवश्यकताओं के खिलाफ व्यवस्थित रूप से संतुलित किया जाता है। वैश्विक नोड्स में उच्च रेंडरिंग निष्पादन गति।",
                 archive_title: "संग्रह", archive_meta: "3 में से 3 प्रारंभिक रिलीज़ दिखा रहा है",
-                prod1_name: "औरा क्रोम रनर", prod2_name: "होराइजन ग्रिड टाइमपीस", prod3_name: "मोनो ऑडियो रेटिकल",
-                acc_about: "हमारे बारे में", acc_support: "सहायता", acc_lang_label: "भाषा: HI",
-                acc_about_desc: "हममिड मेनिफेस्टो: हम आपको वास्तव में मायने रखने वाले वायरल उत्पाद लाने के लिए इंटरनेट के शोर को छानते हैं। एक सौंदर्य जीवन शैली को गुणवत्ता से समझौता नहीं करना चाहिए। प्रदर्शन, स्थायित्व और एक प्रीमियम हार्डवेयर अनुभव के लिए हर ड्रॉप की कड़ाई से जांच की जाती है। टेक-फॉरवर्ड के लिए इंजीनियर किया गया।",
+                prod1_name: "औरा क्रोम रनर", prod2_name: "होराइजन ग्रिड टाइमपीस", prod3_name: "मोनो AUDIO रेटिकल",
+                acc_support: "सहायता", acc_lang_label: "भाषा: HI",
+                acc_about_desc: "HUMMID घोषणापत्र: हम आपको वास्तव में मायने रखने वाले वायरल उत्पाद प्रदान करने के लिए इंटरनेट के शोर को छानते हैं। एक सौंदर्यपूर्ण जीवन शैली को गुणवत्ता से समझौता नहीं करना चाहिए। प्रदर्शन, स्थायित्व और एक प्रीमियम हार्डवेयर अनुभव के लिए हर ड्रॉप की कड़ाई से जांच की जाती है। टेक-फॉरवर्ड के लिए इंजीनियर किया गया।",
                 placeholder_user: "उपयोगकर्ता नाम", placeholder_email: "ईमेल पता", placeholder_query: "अपनी समस्या का वर्णन करें...", btn_submit: "जमा करें"
             },
             ml: {
@@ -634,48 +705,37 @@
                 nav_products: "ഉൽപ്പന്നങ്ങൾ", nav_dashboard: "ഡാഷ്ബോർഡ്", nav_contact: "ബന്ധപ്പെടുക", nav_socials: "സോഷ്യൽസ്", nav_login: "ലോഗിൻ",
                 hero_raw: "റോ", hero_essentials: "എസൻഷ്യൽസ്", hero_tag: "പ്രൊഡക്റ്റ് മൊഡ്യൂൾ // എച്ച്-01",
                 hero_desc: "കണക്കാക്കിയ ഡിജിറ്റൽ ജ്യാമിതി ഉപയോഗിച്ച് നിർമ്മിച്ച ഒരു ബുദ്ധിമാനായ ഇക്കോസിസ്റ്റം. ഉപരിപ്ലവതയിൽ നിന്ന് മുക്തമാണ്. സ്റ്റാൻഡേർഡ് ഹാർഡ്‌വെയർ പ്രവർത്തന പ്രകടനത്തിനായി പ്രോഗ്രാം ചെയ്‌തു.",
-                feat1_meta: "01 // ആർക്കിടെക്ചർ", feat1_title: "പ്യുവർ മാസ്ക്<br>ടെക്നോളജി.", feat1_desc: "ഞങ്ങൾ സീറോ വേരിയബിൾ കർവുകൾ ഉപയോഗിക്കുന്നു. എല്ലാ കവലകളും കർശനമായ ഗ്രിഡ് സജ്ജീകരണത്തിൽ പ്ലോട്ട് ചെയ്തിരിക്കുന്നു, ഇത് സ്റ്റാൻഡേർഡ് ടെംപ്ലേറ്റിംഗ് നിയന്ത്രണങ്ങൾക്ക് പുറത്ത് പൂർണ്ണമായും എഞ്ചിനീയറിംഗ് ചെയ്ത മൂർച്ചയുള്ള വാസ്തുവിദ്യാ ലേഔട്ടുകൾക്ക് കാരണമാകുന്നു.",
-                feat2_meta: "02 // സ്ഥിരീകരണ ദിനചര്യ", feat2_title: "100%<br>പ്രവർത്തനം.", feat2_desc: "വൃത്തിയുള്ള യൂട്ടിലിറ്റി ഔട്ട്‌പുട്ട് ഉറപ്പാക്കാൻ എല്ലാ ബിൽഡ് ആവർത്തനങ്ങളും യഥാർത്ഥ ഹാർഡ്‌വെയർ ആവശ്യകതകൾക്കെതിരെ ചിട്ടയായി സന്തുലിതമാക്കുന്നു. ഗ്ലോബൽ നോഡുകളിലുടനീളം ഉയർന്ന റെൻഡറിംഗ് നിർവ്വഹണ വേഗത.",
+                feat1_meta: "01 // ആർക്കിടെക്ചർ", feat1_title: "പ്യുവർ മാസ്ക്<br>ടെക്നോളജി.", feat1_desc: "ഞങ്ങൾ സീറോ വേരിയബിൾ കർവുകൾ ഉപയോഗിക്കുന്നു. എല്ലാ കവലകളും കർശനമായ ഗ്രിഡ് സജ്ജീകരണത്തിൽ പ്ലോട്ട് ചെയ്തിരിക്കുന്നു, ഇത് സ്റ്റാൻഡേർഡ് ടെംപ്ലേറ്റിംഗ് നിയന്ത്രണങ്ങൾക്ക് പുറത്ത് പൂർണ്ണമായും എഞ്ചിനീയറിംഗ് ചെയ്ത മൂർച്ചയുള്ള വാസ്തുവിദ്യാ ലേഔട്ടുകൾക്ക് കാരണം ആകുന്നു.",
+                feat2_meta: "02 // സ്ഥിരീകരണ ദിനചര്യ", feat2_title: "100%<br>പ്രവർത്തനം.", feat2_desc: "വൃത്തിയുള്ള യൂട്ടിലിറ്റി ഔട്ട്‌പുട്ട് ഉറപ്പാക്കാൻ എല്ലാ ബിൽഡ് ആവർത്തനങ്ങളും യഥാർത്ഥ ഹാർഡ്‌വെയർ ആവശ്യകതകളും നേരിട്ട് പരിശോധിച്ച് ചിട്ടയായി സന്തുലിതമാക്കുന്നു. ഗ്ലോബൽ നോഡുകളിലുടനീളം ഉയർന്ന റെൻഡറിംഗ് നിർവ്വഹണ വേഗത.",
                 archive_title: "ശേഖരം", archive_meta: "3-ൽ 3 പ്രാരംഭ റിലീസുകൾ കാണിക്കുന്നു",
                 prod1_name: "ഓറ ക്രോം റണ്ണർ", prod2_name: "ഹൊറൈസൺ ഗ്രിഡ് ടൈംപീസ്", prod3_name: "മോണോ ഓഡിയോ റെറ്റിക്കിൾ",
-                acc_about: "ഞങ്ങളെക്കുറിച്ച്", acc_support: "പിന്തുണ", acc_lang_label: "ഭാഷ: ML",
-                acc_about_desc: "ഹംമിഡ് മാനിഫെസ്റ്റോ: യഥാർത്ഥത്തിൽ പ്രാധാന്യമുള്ള വൈറൽ ഉൽപ്പന്നങ്ങൾ നിങ്ങൾക്ക് കൊണ്ടുവരാൻ ഞങ്ങൾ ഇൻ്റർനെറ്റിൻ്റെ ശബ്ദത്തിലൂടെ അരിച്ചെടുക്കുന്നു. ഒരു സൗന്ദര്യാത്മക ജീവിതശൈലി ഗുണനിലവാരത്തിൽ വിട്ടുവീഴ്ച ചെയ്യരുത്. പ്രകടനം, ഈട്, പ്രീമിയം ഹാർഡ്‌വെയർ ഫീൽ എന്നിവയ്‌ക്കായി ഓരോ തുള്ളിയും കർശനമായി പരിശോധിക്കുന്നു. ടെക് ഫോർവേഡിനായി എഞ്ചിനീയറിംഗ് ചെയ്തു.",
-                placeholder_user: "ഉപയോക്തൃനാമം", placeholder_email: "ഇമെയിൽ വിലാസം", placeholder_query: "നിങ്ങളുടെ പ്രശ്നം വിശദീകരിക്കുക...", btn_submit: "സമർപ്പിക്കുക"
+                acc_support: "പിന്തുണ", acc_lang_label: "ഭാഷ: ML",
+                acc_about_desc: "HUMMID മാനിഫെസ്റ്റോ: യഥാർത്ഥത്തിൽ പ്രാധാന്യമുള്ള വൈറൽ ഉൽപ്പന്നങ്ങൾ നിങ്ങൾക്ക് കൊണ്ടുവരാൻ ഞങ്ങൾ ഇൻ്റർനെറ്റിൻ്റെ ശബ്ദത്തിലൂടെ അരിച്ചെടുക്കുന്നു. ഒരു സൗന്ദര്യാത്മക ജീവിതശൈലി ഗുണനിലവാരത്തിൽ വിട്ടുവീഴ്ച ചെയ്യരുത്. പ്രകടനം, ഈട്, പ്രീമിയം ഹാർഡ്‌വെയർ ഫീൽ എന്നിവയ്‌ക്കായി ഓരോ തുള്ളിയും കർശനമായി പരിശോധിക്കുന്നു. ടെക് ഫോർവേഡിനായി എഞ്ചിനീയറിംഗ് ചെയ്തു.",
+                placeholder_user: "ഉപയൂക്തൃനാമം", placeholder_email: "ഇമെയിൽ വിലാസം", placeholder_query: "നിങ്ങളുടെ പ്രശ്നം വിശദീകരിക്കുക...", btn_submit: "സമർപ്പിക്കുക"
             }
         };
 
         function translatePage() {
-            // Translate Inner HTML text
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
-                if (i18n[currentLanguage][key]) {
-                    element.innerHTML = i18n[currentLanguage][key];
-                }
+                if (i18n[currentLanguage][key]) { element.innerHTML = i18n[currentLanguage][key]; }
             });
-
-            // Translate Input Placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
                 const key = element.getAttribute('data-i18n-placeholder');
-                if (i18n[currentLanguage][key]) {
-                    element.setAttribute('placeholder', i18n[currentLanguage][key]);
-                }
+                if (i18n[currentLanguage][key]) { element.setAttribute('placeholder', i18n[currentLanguage][key]); }
             });
+            bindCursorHooks(); 
         }
 
         function setLanguage(lang) {
             currentLanguage = lang;
-            
-            // Update Active Buttons
+            document.getElementById('current-lang-display').textContent = `LANGUAGE: ${lang.toUpperCase()}`;
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if(btn.getAttribute('data-lang') === lang) {
-                    btn.classList.add('active');
-                }
+                if(btn.getAttribute('data-lang') === lang) { btn.classList.add('active'); }
             });
-
             translatePage();
         }
-
     </script>
 </body>
 </html>
