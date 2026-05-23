@@ -22,15 +22,13 @@
             --text-muted: #888888;
             --accent-red: #BF0303; 
             --border-color: #222222;
-            --grid-line: rgba(255, 255, 255, 0.05);
             --header-bg: rgba(0, 0, 0, 0.85);
             --image-bg: #111111;
             
             /* Cursor Dynamic Color */
             --cursor-accent: #BF0303;
 
-            /* Interactive Bloom & Orb Colors */
-            --bloom-color: rgba(255, 255, 255, 0.08);
+            /* Ambient Orb Colors */
             --orb-1: rgba(255, 255, 255, 0.05);
             --orb-2: rgba(191, 3, 3, 0.08); /* Faint red glow */
         }
@@ -41,14 +39,12 @@
             --text-dark: #000000;
             --text-muted: #666666;
             --border-color: #E5E5E5;
-            --grid-line: rgba(0, 0, 0, 0.04);
             --header-bg: rgba(255, 255, 255, 0.85);
             --image-bg: #F9F9F9;
             
             --cursor-accent: #000000;
 
-            /* Inverted Light Mode Bloom & Orbs */
-            --bloom-color: rgba(0, 0, 0, 0.05);
+            /* Inverted Light Mode Orbs */
             --orb-1: rgba(0, 0, 0, 0.04);
             --orb-2: rgba(191, 3, 3, 0.05);
         }
@@ -70,7 +66,7 @@
         }
 
         /* ==========================================================================
-           2. JUSTICE ARC HYBRID BACKGROUND (ORBS, GRID, & BLOOM)
+           2. JUSTICE ARC AMBIENT BACKGROUND & ANTIGRAVITY GRID
            ========================================================================== */
         
         /* Floating Ambient Orbs */
@@ -111,20 +107,13 @@
             50% { transform: translate(-50px, -80px); }
         }
 
-        /* The Structural Grid over the orbs */
-        .global-grid {
-            position: fixed; inset: 0; width: 100vw; height: 100vh;
-            background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-                              linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-            background-size: 80px 80px; z-index: 1; pointer-events: none;
-            transition: background-image 0.5s ease;
-        }
-
-        /* The Mouse-Tracking Bloom */
-        .interactive-bloom {
-            position: fixed; inset: 0; z-index: 2; pointer-events: none;
-            will-change: background;
-            /* Starts empty, filled by JS */
+        /* Google Antigravity Canvas Grid */
+        #antigravity-grid {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1;
+            pointer-events: none;
         }
 
         /* Container to push main content above background */
@@ -154,11 +143,6 @@
             width: 24px; height: 24px; border: 1px solid var(--cursor-accent);
             border-radius: 50%; position: fixed; top: 0; left: 0;
             pointer-events: none; z-index: 99997; opacity: 0; 
-        }
-
-        @keyframes record-pulse {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; border-width: 2px; }
-            100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; border-width: 0px; }
         }
 
         /* ==========================================================================
@@ -365,8 +349,7 @@
         <div class="ambient-orb orb-3"></div>
     </div>
     
-    <div class="global-grid"></div>
-    <div class="interactive-bloom" id="mouse-bloom"></div>
+    <canvas id="antigravity-grid"></canvas>
 
     <div class="custom-cursor-pulse"></div>
     <div class="custom-cursor-trail" data-opacity="0.8" style="opacity: 0.8"></div>
@@ -507,6 +490,9 @@
     <script>
         gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
         /* -------------------------
            THEME TOGGLE LOGIC
         ------------------------- */
@@ -524,12 +510,83 @@
         });
 
         /* -------------------------
-           CURSOR & BACKGROUND BLOOM LOGIC
+           GOOGLE ANTIGRAVITY INTERACTIVE CANVAS GRID
+        ------------------------- */
+        const canvas = document.getElementById('antigravity-grid');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        const spacing = 45; // Size of the Nothing OS Dot Matrix
+
+        function initGrid() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            particles = [];
+            
+            for (let x = 0; x <= width + spacing; x += spacing) {
+                for (let y = 0; y <= height + spacing; y += spacing) {
+                    particles.push({
+                        baseX: x, baseY: y,
+                        x: x, y: y,
+                    });
+                }
+            }
+        }
+
+        function animateGrid() {
+            ctx.clearRect(0, 0, width, height);
+            const isLight = rootElement.getAttribute('data-theme') === 'light';
+            const baseColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+            const activeColor = isLight ? 'rgba(0, 0, 0, 0.8)' : 'rgba(191, 3, 3, 0.9)'; // Dark pop or Stark Red
+
+            particles.forEach(p => {
+                const dx = mouseX - p.x;
+                const dy = mouseY - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const maxDist = 180; // Repulsion radius
+                
+                if (dist < maxDist) {
+                    // Force pushes dots away from mouse
+                    const force = (maxDist - dist) / maxDist;
+                    const angle = Math.atan2(dy, dx);
+                    
+                    const targetX = p.baseX - Math.cos(angle) * force * 50;
+                    const targetY = p.baseY - Math.sin(angle) * force * 50;
+                    
+                    p.x += (targetX - p.x) * 0.15;
+                    p.y += (targetY - p.y) * 0.15;
+                    
+                    ctx.fillStyle = activeColor;
+                    ctx.beginPath();
+                    // Dots grow slightly when pushed
+                    ctx.arc(p.x, p.y, 2 + (force * 1.5), 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Spring back to base position
+                    p.x += (p.baseX - p.x) * 0.1;
+                    p.y += (p.baseY - p.y) * 0.1;
+                    
+                    ctx.fillStyle = baseColor;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            requestAnimationFrame(animateGrid);
+        }
+
+        initGrid();
+        animateGrid();
+        window.addEventListener('resize', initGrid);
+
+        /* -------------------------
+           DATA RIBBON CURSOR LOGIC
         ------------------------- */
         const cursorDot = document.querySelector('.custom-cursor-dot');
         const cursorPulse = document.querySelector('.custom-cursor-pulse');
         const cursorTrails = gsap.utils.toArray('.custom-cursor-trail');
-        const bloomElement = document.getElementById('mouse-bloom');
 
         gsap.set([cursorDot, cursorPulse, ...cursorTrails], { xPercent: -50, yPercent: -50 });
 
@@ -539,22 +596,20 @@
         );
 
         window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
             // Track cursor dot
-            gsap.to([cursorDot, cursorPulse], { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to([cursorDot, cursorPulse], { x: mouseX, y: mouseY, duration: 0 });
             
             // Track cursor tail
             cursorTrails.forEach((trail, index) => {
                 gsap.to(trail, {
-                    x: e.clientX, y: e.clientY,
+                    x: mouseX, y: mouseY,
                     duration: 0.15 + (index * 0.12),
                     ease: "power2.out", overwrite: "auto" 
                 });
             });
-
-            // Update Justice Arc background bloom effect globally
-            const xPercent = (e.clientX / window.innerWidth) * 100;
-            const yPercent = (e.clientY / window.innerHeight) * 100;
-            bloomElement.style.background = `radial-gradient(circle at ${xPercent}% ${yPercent}%, var(--bloom-color), transparent 45%)`;
         });
 
         document.querySelectorAll('.context-hook').forEach(element => {
