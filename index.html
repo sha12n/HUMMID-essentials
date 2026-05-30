@@ -25,16 +25,14 @@
             --header-bg: rgba(0, 0, 0, 0.85);
             
             --tile-bg: rgba(15, 15, 15, 0.8);
+            --tile-image-bg: rgba(20, 20, 20, 0.9);
             --tile-text: #FFFFFF;
             
-            /* Cursor shifts to White in Dark Mode */
             --cursor-accent: #FFFFFF; 
-            
             --acc-bg: rgba(15, 15, 15, 0.8);
             --acc-hover: rgba(25, 25, 25, 0.9);
             --input-bg: rgba(20, 20, 20, 0.9);
 
-            /* Premium Apple/Framer Curvy Edges */
             --radius-lg: 24px;
             --radius-sm: 12px;
         }
@@ -46,22 +44,19 @@
             --border-color: #E5E5E5;
             --header-bg: rgba(245, 245, 245, 0.85);
             
-            /* High Contrast Black Tiles for Light Mode */
             --tile-bg: rgba(0, 0, 0, 0.8);
+            --tile-image-bg: rgba(17, 17, 17, 0.9);
             --tile-text: #FFFFFF;
             
-            /* Cursor shifts to Red in Light Mode */
-            --cursor-accent: #BF0303; 
-            
+            --cursor-accent: #000000; 
             --acc-bg: rgba(0, 0, 0, 0.8);
             --acc-hover: rgba(17, 17, 17, 0.9);
             --input-bg: rgba(26, 26, 26, 0.9);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
         
-        /* The cursor is hidden safely via JS class to prevent vanishing if JS fails */
-        body.hide-cursor * { cursor: none !important; }
+        a, button, .accordion-header { cursor: none; }
 
         body {
             background-color: var(--bg-base); 
@@ -87,11 +82,16 @@
         }
 
         /* ==========================================================================
-           3. HARDWARE CURSOR (DATA RIBBON)
+           3. HARDWARE CURSOR (DIFFERENCE LENS)
            ========================================================================== */
-        .custom-cursor-dot { width: 6px; height: 6px; background-color: var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999999; transition: background-color 0.3s ease; }
-        .custom-cursor-trail { width: 4px; height: 4px; background-color: var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999998; transition: background-color 0.3s ease; }
-        .custom-cursor-pulse { width: 24px; height: 24px; border: 1px solid var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999997; opacity: 0; transition: border-color 0.3s ease; }
+        .custom-cursor-dot { width: 6px; height: 6px; background-color: var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999999; transition: background-color 0.3s ease; mix-blend-mode: difference; }
+        .custom-cursor-trail { width: 4px; height: 4px; background-color: var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999998; transition: background-color 0.3s ease; mix-blend-mode: difference; }
+        .custom-cursor-pulse { width: 24px; height: 24px; border: 1px solid var(--cursor-accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999997; opacity: 0; transition: border-color 0.3s ease; mix-blend-mode: difference; }
+
+        @media (pointer: coarse) and (max-width: 768px) {
+            * { cursor: auto !important; }
+            .custom-cursor-dot, .custom-cursor-trail, .custom-cursor-pulse { display: none !important; }
+        }
 
         /* ==========================================================================
            4. HEADER & SIDEBAR
@@ -104,30 +104,26 @@
         
         .header-right-controls { display: flex; align-items: center; gap: 20px; width: 200px; justify-content: flex-end; }
         .theme-toggle-btn { background: none; border: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s ease; text-decoration: none; }
-        .theme-toggle-btn:hover { color: var(--cursor-accent); }
+        .theme-toggle-btn:hover { color: var(--text-main); }
         .menu-trigger { background: none; border: none; display: flex; flex-direction: column; gap: 6px; padding: 10px; }
         .menu-trigger span { display: block; width: 28px; height: 2px; background-color: var(--text-main); border-radius: 2px; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease; }
-        .menu-trigger:hover span:nth-child(2) { background-color: var(--cursor-accent); transform: translateX(-4px); }
+        .menu-trigger:hover span:nth-child(2) { background-color: var(--accent-red); transform: translateX(-4px); }
 
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); z-index: 2000; display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
         
-        .sidebar-panel { 
-            width: 450px; height: 100%; background: var(--bg-base); border-left: 1px solid var(--border-color); 
-            padding: 40px; display: flex; flex-direction: column; 
-            transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease; position: absolute; right: 0; 
-        }
+        .sidebar-panel { width: 450px; height: 100%; background: var(--bg-base); border-left: 1px solid var(--border-color); padding: 40px; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease; position: absolute; right: 0; }
         .sidebar-overlay.active .sidebar-panel { transform: translateX(0); }
         
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border-color); padding-bottom: 20px; margin-bottom: 40px;}
         .sidebar-brand-logo .main-title { font-family: 'Syncopate', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -1px; color: var(--text-main); }
         .sidebar-brand-logo .sub-title { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--accent-red); letter-spacing: 1px; margin-top: 2px; font-weight: 700; }
         .close-btn { background: none; border: 1px solid var(--text-main); color: var(--text-main); font-family: 'Space Mono', monospace; padding: 5px 15px; font-size: 12px; text-transform: uppercase; border-radius: var(--radius-sm); transition: all 0.3s ease; }
-        .close-btn:hover { border-color: var(--cursor-accent); color: var(--cursor-accent); }
+        .close-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
         
         .sidebar-nav-list { list-style: none; display: flex; flex-direction: column; gap: 30px; flex-grow: 1; justify-content: center; }
         .nav-item { font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700; text-decoration: none; color: var(--text-main); text-transform: uppercase; display: block; position: relative; background: radial-gradient(circle, var(--text-main) 40%, transparent 45%); background-size: 4px 4px; -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1); }
-        .nav-item:hover { background: radial-gradient(circle, var(--cursor-accent) 45%, transparent 50%); background-size: 3px 3px; -webkit-background-clip: text; -webkit-text-fill-color: transparent; padding-left: 15px; letter-spacing: 2px; }
+        .nav-item:hover { background: radial-gradient(circle, var(--accent-red) 45%, transparent 50%); background-size: 3px 3px; -webkit-background-clip: text; -webkit-text-fill-color: transparent; padding-left: 15px; letter-spacing: 2px; }
         .sidebar-footer { border-top: 1px dashed var(--border-color); padding-top: 20px; font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; margin-top: auto;}
 
         /* ==========================================================================
@@ -136,21 +132,89 @@
         .login-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); z-index: 2500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
         .login-overlay.active { opacity: 1; pointer-events: all; }
         
-        .login-modal { 
-            width: 100%; max-width: 400px; padding: 40px; 
-            background: var(--tile-bg); position: relative; 
-            display: flex; flex-direction: column; gap: 20px;
-            transform: translateY(20px); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            border-radius: var(--radius-lg); border: 1px solid var(--border-color);
-        }
+        .login-modal { width: 100%; max-width: 400px; padding: 40px; background: var(--tile-bg); position: relative; display: flex; flex-direction: column; gap: 20px; transform: translateY(20px); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: var(--radius-lg); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); }
         .login-overlay.active .login-modal { transform: translateY(0); }
         
-        .login-title { font-family: 'Syncopate', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-main); text-align: center; margin-bottom: 10px; }
-        .login-close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 14px; font-family: 'Space Mono', monospace; transition: color 0.3s; }
+        .login-title { font-family: 'Syncopate', sans-serif; font-size: 20px; font-weight: 700; color: var(--tile-text); text-align: center; margin-bottom: 10px; }
+        .login-close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #888888; font-size: 14px; font-family: 'Space Mono', monospace; transition: color 0.3s; }
         .login-close-btn:hover { color: var(--accent-red); }
 
         /* ==========================================================================
-           6. SECTIONS & IMAGE BLENDING REPAIR
+           6. AI CHATBOT WIDGET (FIXED VISIBILITY & CLIPPING)
+           ========================================================================== */
+        .chatbot-btn {
+            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
+            background: var(--tile-bg); border: 1px solid var(--border-color);
+            border-radius: 50%; z-index: 1500; display: flex; align-items: center; justify-content: center;
+            font-family: 'Syncopate', sans-serif; font-size: 28px; font-weight: 700; color: var(--text-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .chatbot-btn:hover { transform: scale(1.1); border-color: var(--accent-red); color: var(--accent-red); }
+        
+        .chat-window-overlay {
+            position: fixed; bottom: 110px; right: 30px; width: 380px; 
+            max-height: calc(100vh - 140px); /* Prevents top clipping */
+            background: var(--tile-bg); border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg); z-index: 1500; display: flex; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); backdrop-filter: blur(20px);
+            opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .chat-window-overlay.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+        
+        .chat-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .chat-header h4 { font-family: 'Syncopate', sans-serif; font-size: 14px; color: var(--tile-text); }
+        .chat-close { background: none; border: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 12px; }
+        .chat-close:hover { color: var(--accent-red); }
+        
+        .chat-messages { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; font-size: 13px; min-height: 200px; }
+        .chat-msg { max-width: 80%; padding: 12px 16px; border-radius: var(--radius-sm); line-height: 1.5; }
+        .msg-ai { background: rgba(255,255,255,0.05); color: var(--tile-text); align-self: flex-start; border: 1px solid rgba(255,255,255,0.05); }
+        .msg-user { background: var(--accent-red); color: #FFF; align-self: flex-end; }
+        
+        .chat-input-area { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; flex-shrink: 0;}
+        .chat-input-area input { flex-grow: 1; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); padding: 12px; color: var(--tile-text); font-family: 'Space Mono', monospace; font-size: 12px; outline: none;}
+        .chat-input-area button { background: var(--text-main); color: var(--bg-base); border: none; border-radius: var(--radius-sm); padding: 0 15px; font-family: 'Syncopate', sans-serif; font-size: 10px; font-weight: 700; transition: 0.3s; }
+        .chat-input-area button:hover { background: var(--accent-red); color: #FFF; }
+
+        /* ==========================================================================
+           7. PRODUCT DETAILS PAGE (PDP) MODAL & BUY NOW
+           ========================================================================== */
+        .pdp-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px); z-index: 3000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; padding: 20px; }
+        .pdp-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .pdp-modal { width: 100%; max-width: 1100px; height: 85vh; background: var(--tile-bg); border: 1px solid var(--border-color); border-radius: var(--radius-lg); display: flex; overflow: hidden; transform: scale(0.95); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+        .pdp-overlay.active .pdp-modal { transform: scale(1); }
+        
+        .pdp-left { width: 50%; background: #E8E8E8; display: flex; align-items: center; justify-content: center; padding: 40px; position: relative;}
+        .pdp-left img { width: 90%; height: auto; filter: grayscale(100%) contrast(1.15); }
+        
+        .pdp-right { width: 50%; padding: 60px 50px; display: flex; flex-direction: column; overflow-y: auto; color: var(--tile-text); position: relative;}
+        .pdp-close-btn { position: absolute; top: 25px; right: 30px; background: none; border: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 14px; transition: color 0.3s; z-index: 10; }
+        .pdp-close-btn:hover { color: var(--accent-red); }
+        
+        .pdp-category { font-size: 12px; color: var(--accent-red); text-transform: uppercase; margin-bottom: 10px; font-weight: 700; }
+        .pdp-title { font-family: 'Syncopate', sans-serif; font-size: 32px; text-transform: uppercase; margin-bottom: 15px; line-height: 1.1; }
+        .pdp-price { font-size: 24px; font-weight: 700; margin-bottom: 30px; }
+        .pdp-desc { font-size: 14px; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px; }
+        
+        .pdp-specs { border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 20px 0; margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 12px; }
+        .pdp-spec-item span { color: var(--text-muted); display: block; margin-bottom: 4px;}
+        
+        .pdp-variants { margin-bottom: 40px; }
+        .pdp-variants-title { font-size: 12px; text-transform: uppercase; margin-bottom: 15px; color: var(--text-muted); }
+        .variant-btns { display: flex; gap: 10px; }
+        .variant-btn { background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); color: var(--tile-text); padding: 10px 20px; font-family: 'Space Mono', monospace; font-size: 12px; border-radius: var(--radius-sm); transition: 0.3s; }
+        .variant-btn.active, .variant-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
+        
+        .pdp-actions { display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
+        .add-to-cart-btn { background: transparent; color: var(--tile-text); border: 1px solid rgba(255,255,255,0.2); padding: 18px; width: 100%; font-family: 'Syncopate', sans-serif; font-size: 14px; font-weight: 700; border-radius: var(--radius-sm); transition: 0.3s; text-transform: uppercase;}
+        .add-to-cart-btn:hover { background: rgba(255,255,255,0.05); border-color: var(--tile-text); }
+        .buy-now-btn { background: var(--accent-red); color: #FFF; border: none; padding: 18px; width: 100%; font-family: 'Syncopate', sans-serif; font-size: 14px; font-weight: 700; border-radius: var(--radius-sm); transition: 0.3s; text-transform: uppercase;}
+        .buy-now-btn:hover { background: #990000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(191,3,3,0.3); }
+
+        /* ==========================================================================
+           8. SECTIONS & LAYOUT 
            ========================================================================== */
         .hero-section { min-height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; padding: 100px 5%; border-bottom: 1px solid var(--border-color); }
         .hero-layout { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 1400px; align-items: center; gap: 40px; }
@@ -158,21 +222,8 @@
         .hero-typography .highlight { color: var(--accent-red); display: block; }
         .hero-typography p { margin-top: 30px; font-size: 14px; color: var(--text-muted); max-width: 400px; line-height: 1.6; }
         
-        /* The Image Windows are explicitly grey to allow Multiply to delete photo edges */
-        .hero-display-box, .feature-visual, .item-visual { 
-            background-color: #E8E8E8 !important; 
-            overflow: hidden; 
-            border: 1px solid var(--border-color);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .hero-display-box img, .feature-visual img, .item-visual img { 
-            width: 80%; height: 80%; object-fit: contain; 
-            mix-blend-mode: multiply; /* Mathematically deletes white/grey edges */
-            filter: grayscale(100%) contrast(1.15); 
-            border-radius: inherit; 
-        }
-        
-        .hero-display-box { height: 500px; position: relative; border-radius: var(--radius-lg); backdrop-filter: blur(20px); }
+        .hero-display-box { border: 1px solid var(--border-color); height: 500px; background: #E8E8E8; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: background-color 0.5s ease, border-color 0.5s ease; border-radius: var(--radius-lg); backdrop-filter: blur(20px); }
+        .hero-display-box img { width: 80%; height: 80%; object-fit: contain; filter: grayscale(100%) contrast(1.15); mix-blend-mode: multiply; border-radius: inherit; }
         .telemetry-tag { position: absolute; bottom: 15px; left: 15px; font-size: 10px; text-transform: uppercase; color: #555555; z-index: 2; font-weight: 700; }
 
         .feature-stack-section { width: 100vw; padding: 150px 5%; overflow: hidden; }
@@ -183,7 +234,8 @@
         .feature-text h2 { font-family: 'Syncopate', sans-serif; font-size: 3.5vw; text-transform: uppercase; line-height: 0.9; letter-spacing: -2px; margin-bottom: 20px; color: var(--text-main); transition: color 0.5s ease; }
         .feature-meta { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent-red); text-transform: uppercase; margin-bottom: 15px; display: block; font-weight: 700; }
         .feature-text p { color: var(--text-muted); font-size: 15px; line-height: 1.8; max-width: 450px; }
-        .feature-visual { width: 100%; height: 400px; border-radius: var(--radius-lg); backdrop-filter: blur(20px);}
+        .feature-visual { width: 100%; height: 400px; border: 1px solid var(--border-color); background: #E8E8E8; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: var(--radius-lg); backdrop-filter: blur(20px);}
+        .feature-visual img { width: 80%; height: 80%; object-fit: contain; filter: grayscale(100%) contrast(1.15); mix-blend-mode: multiply; border-radius: inherit; }
 
         .inventory-section { padding: 140px 5%; max-width: 1400px; margin: 0 auto; }
         .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; transition: border-color 0.5s ease; }
@@ -193,8 +245,8 @@
         .catalog-item { background: var(--tile-bg); border: 1px solid var(--border-color); padding: 25px; display: flex; flex-direction: column; height: 500px; justify-content: space-between; position: relative; z-index: 1; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); border-radius: var(--radius-lg); backdrop-filter: blur(20px);}
         .catalog-item:hover { transform: translateY(-8px); border-color: var(--accent-red); box-shadow: 0 20px 40px rgba(0,0,0,0.4); z-index: 10; }
         
-        .item-visual { width: 100%; height: 300px; border-radius: calc(var(--radius-lg) - 8px); transition: background-color 0.5s ease;}
-        .item-visual img { width: 70%; height: 70%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+        .item-visual { width: 100%; height: 300px; background: #E8E8E8; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: background-color 0.5s ease; border-radius: calc(var(--radius-lg) - 8px); border: 1px solid var(--border-color);}
+        .item-visual img { width: 70%; height: 70%; object-fit: contain; filter: grayscale(100%) contrast(1.15); transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); mix-blend-mode: multiply; border-radius: inherit; }
         .catalog-item:hover .item-visual img { transform: scale(1.08); }
         
         .item-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; color: var(--tile-text); }
@@ -203,7 +255,7 @@
         .item-price { font-size: 16px; color: var(--accent-red); font-weight: 700; }
 
         /* ==========================================================================
-           7. UTILITY ACCORDION FOOTER
+           9. UTILITY ACCORDION FOOTER 
            ========================================================================== */
         .footer-section { padding: 100px 5%; max-width: 800px; margin: 0 auto; }
         
@@ -212,7 +264,7 @@
         .manifesto-large-text::first-letter { font-size: 70px; font-weight: 700; float: left; line-height: 0.7; padding-right: 15px; margin-top: 5px; color: var(--accent-red); }
 
         .accordion-item { margin-bottom: 15px; background: var(--acc-bg); overflow: hidden; transition: background-color 0.5s ease; border-radius: var(--radius-lg); border: 1px solid var(--border-color); backdrop-filter: blur(20px);}
-        .accordion-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 25px 30px; background: transparent; border: none; color: var(--tile-text); font-family: 'Syncopate', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; transition: background-color 0.3s ease; }
+        .accordion-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 25px 30px; background: transparent; border: none; color: var(--tile-text); font-family: 'Syncopate', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; transition: background-color 0.3s ease; cursor: pointer; }
         .accordion-header:hover { background: var(--acc-hover); }
         .accordion-header .icon { font-family: 'Space Mono', monospace; font-size: 16px; transition: transform 0.4s ease; }
         
@@ -223,17 +275,17 @@
 
         .support-form { display: grid; gap: 15px; margin-top: 10px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .support-form input, .support-form textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--tile-text); padding: 15px; font-family: 'Space Mono', monospace; font-size: 12px; outline: none; transition: border-color 0.3s ease; border-radius: var(--radius-sm);}
+        .support-form input, .support-form textarea { width: 100%; background: var(--input-bg); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--tile-text); padding: 15px; font-family: 'Space Mono', monospace; font-size: 12px; outline: none; transition: border-color 0.3s ease; border-radius: var(--radius-sm);}
         .support-form input:focus, .support-form textarea:focus { border-color: var(--accent-red); }
-        .support-btn { background: var(--accent-red); color: #FFFFFF; border: none; font-family: 'Syncopate', sans-serif; font-size: 12px; font-weight: 700; padding: 15px; text-transform: uppercase; transition: all 0.3s ease; border-radius: var(--radius-sm);}
+        .support-btn { background: var(--accent-red); color: #FFFFFF; border: none; font-family: 'Syncopate', sans-serif; font-size: 12px; font-weight: 700; padding: 15px; text-transform: uppercase; transition: all 0.3s ease; border-radius: var(--radius-sm); cursor: pointer;}
         .support-btn:hover { background: #FFFFFF; color: #000000; }
 
         .lang-options { display: flex; gap: 15px; margin-top: 10px; }
-        .lang-btn { flex: 1; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--tile-text); padding: 15px; font-family: 'Syncopate', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease; border-radius: var(--radius-sm);}
+        .lang-btn { flex: 1; background: var(--input-bg); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--tile-text); padding: 15px; font-family: 'Syncopate', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease; border-radius: var(--radius-sm); cursor: pointer;}
         .lang-btn:hover, .lang-btn.active { border-color: var(--accent-red); color: var(--accent-red); }
 
         /* ==========================================================================
-           8. MOBILE RESPONSIVENESS
+           10. MOBILE RESPONSIVENESS
            ========================================================================== */
         @media (max-width: 768px) {
             header { padding: 15px 20px; }
@@ -256,6 +308,12 @@
             .footer-section { padding: 80px 5%; }
             .form-row { grid-template-columns: 1fr; }
             .lang-options { flex-direction: column; }
+            
+            /* Mobile PDP & Chat Adjustments */
+            .pdp-modal { flex-direction: column; height: 95vh; overflow-y: auto; }
+            .pdp-left { width: 100%; height: 300px; padding: 20px; }
+            .pdp-right { width: 100%; padding: 30px 20px; }
+            .chat-window-overlay { width: 90vw; right: 5vw; bottom: 100px; }
         }
     </style>
 </head>
@@ -270,6 +328,58 @@
     <div class="custom-cursor-trail" data-opacity="0.2" style="opacity: 0.2"></div>
     <div class="custom-cursor-trail" data-opacity="0.1" style="opacity: 0.1"></div>
     <div class="custom-cursor-dot"></div>
+
+    <button class="chatbot-btn context-hook" id="chatbot-trigger">H</button>
+    
+    <div class="chat-window-overlay" id="chat-window">
+        <div class="chat-header">
+            <h4>HUMMID AI</h4>
+            <button class="chat-close context-hook" id="chat-close">CLOSE [X]</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="chat-msg msg-ai">System initialized. I am powered by Google Gemini. How can I assist you with the archive today?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" class="context-hook" placeholder="Initialize query...">
+            <button class="context-hook" id="chat-send">SEND</button>
+        </div>
+    </div>
+
+    <div class="pdp-overlay" id="pdp-overlay">
+        <div class="pdp-modal">
+            <div class="pdp-left">
+                <img src="" id="pdp-img" alt="Product Image">
+            </div>
+            <div class="pdp-right">
+                <button class="pdp-close-btn context-hook" id="close-pdp">CLOSE [X]</button>
+                <div class="pdp-category" id="pdp-category">CATEGORY</div>
+                <h2 class="pdp-title" id="pdp-title">PRODUCT NAME</h2>
+                <div class="pdp-price" id="pdp-price">₹0,000</div>
+                <p class="pdp-desc" id="pdp-desc">Product description goes here.</p>
+                
+                <div class="pdp-specs">
+                    <div class="pdp-spec-item"><span>MATERIAL</span> Aero-Grade Aluminum</div>
+                    <div class="pdp-spec-item"><span>WEIGHT</span> 240g</div>
+                    <div class="pdp-spec-item"><span>WARRANTY</span> 1 Year Structural</div>
+                    <div class="pdp-spec-item"><span>ORIGIN</span> Assembled in Sector 4</div>
+                </div>
+                
+                <div class="pdp-variants">
+                    <div class="pdp-variants-title">SELECT CONFIGURATION</div>
+                    <div class="variant-btns">
+                        <button class="variant-btn context-hook active">BASE</button>
+                        <button class="variant-btn context-hook">PRO</button>
+                        <button class="variant-btn context-hook">ELITE</button>
+                    </div>
+                </div>
+                
+                <div class="pdp-actions">
+                    <button class="add-to-cart-btn context-hook" id="add-to-cart-btn">ADD TO CART</button>
+                    <button class="buy-now-btn context-hook" id="buy-now-btn">BUY IT NOW</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="content-wrapper">
         <header>
@@ -294,9 +404,9 @@
                 <button class="login-close-btn context-hook" id="close-login">X</button>
                 <h3 class="login-title" data-i18n="login_title">AUTHENTICATE</h3>
                 
-                <button id="google-login" class="support-btn context-hook" style="width:100%; margin-bottom: 20px; background: var(--text-main); color: var(--bg-base);">CONTINUE WITH GOOGLE</button>
+                <button id="google-login" class="support-btn context-hook" style="width:100%; margin-bottom: 20px; background: #FFFFFF; color: #000000;">CONTINUE WITH GOOGLE</button>
                 
-                <div style="text-align:center; margin-bottom: 20px; font-size:12px; color:var(--text-muted);">— OR —</div>
+                <div style="text-align:center; margin-bottom: 20px; font-size:12px; color:#888888;">— OR —</div>
                 
                 <form id="phone-login-form" class="support-form" style="margin-top:0;">
                     <input type="tel" id="phone-input" placeholder="+1 234 567 8900" class="context-hook glass-card" required>
@@ -380,7 +490,8 @@
             </div>
             
             <div class="catalog-grid">
-                <div class="catalog-item glass-card context-hook xtract-reveal">
+                <div class="catalog-item glass-card context-hook xtract-reveal pdp-trigger" 
+                     data-title="AURA CHROME RUNNER" data-category="SYS-MODULE // 001" data-price="₹8,999" data-img="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop" data-desc="Engineered for high-impact mobility. The Aura Chrome Runner features advanced suspension mapping and a sleek, aerodynamic profile built specifically for urban environments.">
                     <div class="item-visual">
                         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop" alt="Item Alpha">
                     </div>
@@ -393,7 +504,8 @@
                     </div>
                 </div>
 
-                <div class="catalog-item glass-card context-hook xtract-reveal">
+                <div class="catalog-item glass-card context-hook xtract-reveal pdp-trigger"
+                     data-title="HORIZON GRID TIMEPIECE" data-category="SYS-MODULE // 002" data-price="₹14,500" data-img="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop" data-desc="Precision calculated. This timepiece utilizes a rigid grid-dial mechanism protected by sapphire crystal, offering uncompromised durability and minimalist aesthetic.">
                     <div class="item-visual">
                         <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop" alt="Item Beta">
                     </div>
@@ -406,7 +518,8 @@
                     </div>
                 </div>
 
-                <div class="catalog-item glass-card context-hook xtract-reveal">
+                <div class="catalog-item glass-card context-hook xtract-reveal pdp-trigger"
+                     data-title="MONO AUDIO RETICLE" data-category="SYS-MODULE // 003" data-price="₹4,200" data-img="https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000&auto=format&fit=crop" data-desc="Pure sound architecture. Features zero-latency transmission protocols and noise-isolating memory foam pads. Built for extended operational focus.">
                     <div class="item-visual">
                         <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000&auto=format&fit=crop" alt="Item Gamma">
                     </div>
@@ -466,7 +579,6 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             
-            // Safely activate custom cursor to prevent it breaking if JS fails
             document.body.classList.add('hide-cursor');
             
             if (typeof gsap !== 'undefined') {
@@ -478,9 +590,10 @@
             ------------------------- */
             let mouseX = window.innerWidth / 2;
             let mouseY = window.innerHeight / 2;
+            const isTouchDevice = () => ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
             /* -------------------------
-               2. SUPABASE LOGIN BACKEND (Safeguarded)
+               2. SUPABASE LOGIN BACKEND
             ------------------------- */
             try {
                 const supabaseUrl = 'https://tctluqpovpipronxfqiw.supabase.co';
@@ -548,11 +661,114 @@
                     }
                 });
             } catch (err) {
-                console.warn("Supabase failed to initialize, skipping login functions.");
+                console.warn("Supabase skipped.");
             }
 
             /* -------------------------
-               3. DOWNLOAD BUTTON LOGIC
+               3. PDP MODAL & BUY BUTTONS
+            ------------------------- */
+            const pdpOverlay = document.getElementById('pdp-overlay');
+            const closePdpBtn = document.getElementById('close-pdp');
+            
+            document.querySelectorAll('.pdp-trigger').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.getElementById('pdp-img').src = this.getAttribute('data-img');
+                    document.getElementById('pdp-title').innerText = this.getAttribute('data-title');
+                    document.getElementById('pdp-category').innerText = this.getAttribute('data-category');
+                    document.getElementById('pdp-price').innerText = this.getAttribute('data-price');
+                    document.getElementById('pdp-desc').innerText = this.getAttribute('data-desc');
+                    pdpOverlay.classList.add('active');
+                });
+            });
+
+            closePdpBtn.addEventListener('click', () => pdpOverlay.classList.remove('active'));
+            
+            document.getElementById('add-to-cart-btn').addEventListener('click', function() {
+                const orig = this.innerHTML;
+                this.innerHTML = "ADDED TO CART ✓";
+                this.style.background = "rgba(255,255,255,0.1)";
+                setTimeout(() => { this.innerHTML = orig; this.style.background = "transparent"; pdpOverlay.classList.remove('active'); }, 1500);
+            });
+            
+            document.getElementById('buy-now-btn').addEventListener('click', function() {
+                const orig = this.innerHTML;
+                this.innerHTML = "PROCESSING SECURE CHECKOUT...";
+                setTimeout(() => { this.innerHTML = orig; pdpOverlay.classList.remove('active'); }, 1500);
+            });
+
+            /* -------------------------
+               4. AI CHATBOT (GOOGLE GEMINI ENABLED)
+            ------------------------- */
+            const chatTrigger = document.getElementById('chatbot-trigger');
+            const chatWindow = document.getElementById('chat-window');
+            const chatClose = document.getElementById('chat-close');
+            const chatSendBtn = document.getElementById('chat-send');
+            const chatInput = document.getElementById('chat-input');
+            const chatMessages = document.getElementById('chat-messages');
+
+            // --- IMPORTANT: INSERT YOUR GOOGLE AI STUDIO API KEY HERE ---
+            const GEMINI_API_KEY = 'YOUR_GOOGLE_AI_STUDIO_API_KEY';
+
+            // Click Outside to Close functionality
+            document.addEventListener('click', (e) => {
+                if (!chatWindow.contains(e.target) && !chatTrigger.contains(e.target) && chatWindow.classList.contains('active')) {
+                    chatWindow.classList.remove('active');
+                }
+            });
+
+            chatTrigger.addEventListener('click', () => chatWindow.classList.add('active'));
+            chatClose.addEventListener('click', () => chatWindow.classList.remove('active'));
+
+            async function fetchGeminiResponse(userText) {
+                if (GEMINI_API_KEY === 'YOUR_GOOGLE_AI_STUDIO_API_KEY') {
+                    return "System Warning: Please insert your Google AI Studio API key in the JavaScript to activate the Gemini neural net.";
+                }
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: `You are HUMMID AI, a highly intelligent, minimalist tech assistant for HUMMID essentials. Answer briefly and professionally in a cyberpunk tech tone: ${userText}` }] }] })
+                    });
+                    const data = await response.json();
+                    return data.candidates[0].content.parts[0].text;
+                } catch (err) {
+                    return "Connection to Google Gemini servers failed. Please verify API key and network status.";
+                }
+            }
+
+            chatSendBtn.addEventListener('click', async () => {
+                const prompt = chatInput.value.trim();
+                if(prompt !== '') {
+                    // Append User Msg
+                    const userMsg = document.createElement('div');
+                    userMsg.className = 'chat-msg msg-user';
+                    userMsg.innerText = prompt;
+                    chatMessages.appendChild(userMsg);
+                    
+                    chatInput.value = '';
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                    // Append Loading Indicator
+                    const aiLoading = document.createElement('div');
+                    aiLoading.className = 'chat-msg msg-ai';
+                    aiLoading.innerText = "Analyzing query...";
+                    chatMessages.appendChild(aiLoading);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                    // Fetch Real Response
+                    const aiResponseText = await fetchGeminiResponse(prompt);
+                    aiLoading.innerText = aiResponseText;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            });
+            
+            // Allow 'Enter' key to send message
+            chatInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') { chatSendBtn.click(); }
+            });
+
+            /* -------------------------
+               5. DOWNLOAD BUTTON LOGIC
             ------------------------- */
             const downloadBtn = document.getElementById('download-btn');
             if (downloadBtn) {
@@ -560,15 +776,12 @@
                     const orig = downloadBtn.innerHTML;
                     downloadBtn.innerHTML = 'COMING SOON';
                     downloadBtn.style.color = 'var(--accent-red)';
-                    setTimeout(() => {
-                        downloadBtn.innerHTML = orig;
-                        downloadBtn.style.color = '';
-                    }, 2000);
+                    setTimeout(() => { downloadBtn.innerHTML = orig; downloadBtn.style.color = ''; }, 2000);
                 });
             }
 
             /* -------------------------
-               4. THEME TOGGLE LOGIC
+               6. THEME TOGGLE LOGIC
             ------------------------- */
             const themeToggleBtn = document.getElementById('theme-toggle');
             const rootElement = document.documentElement;
@@ -588,7 +801,7 @@
             }
 
             /* -------------------------
-               5. ANTIGRAVITY BACKGROUND CANVAS
+               7. ANTIGRAVITY BACKGROUND CANVAS
             ------------------------- */
             const anticanvas = document.getElementById('antigravity-canvas');
             if (anticanvas) {
@@ -651,9 +864,9 @@
             }
 
             /* -------------------------
-               6. DATA RIBBON CURSOR LOGIC (Unrestricted)
+               8. DATA RIBBON CURSOR LOGIC 
             ------------------------- */
-            if (typeof gsap !== 'undefined') {
+            if (typeof gsap !== 'undefined' && !isTouchDevice()) {
                 const cursorDot = document.querySelector('.custom-cursor-dot');
                 const cursorPulse = document.querySelector('.custom-cursor-pulse');
                 const cursorTrails = gsap.utils.toArray('.custom-cursor-trail');
@@ -662,7 +875,6 @@
                 const hoverPulseAnim = gsap.fromTo(cursorPulse, { scale: 0.5, opacity: 1, borderWidth: 2 }, { scale: 2.2, opacity: 0, borderWidth: 0, duration: 1.2, repeat: -1, ease: "power2.out", paused: true });
 
                 window.addEventListener('mousemove', (e) => {
-                    // Update global coordinate tracker for background canvas
                     mouseX = e.clientX; 
                     mouseY = e.clientY;
 
@@ -693,10 +905,12 @@
                         gsap.to(aboutCard, { borderColor: "var(--border-color)", borderWidth: "1px", duration: 0.4, ease: "power2.out" });
                     });
                 }
+            }
 
-                /* -------------------------
-                   7. XTRACT.AI SCROLL REVEALS
-                ------------------------- */
+            /* -------------------------
+               9. XTRACT.AI SCROLL REVEALS
+            ------------------------- */
+            if (typeof gsap !== 'undefined') {
                 gsap.utils.toArray('.xtract-reveal').forEach((elem, i) => {
                     gsap.from(elem, {
                         scrollTrigger: {
@@ -715,7 +929,7 @@
             }
 
             /* -------------------------
-               8. NAVIGATION LOGIC
+               10. NAVIGATION LOGIC
             ------------------------- */
             const navOverlay = document.getElementById('nav-overlay');
             if (navOverlay) {
@@ -734,7 +948,7 @@
             }
 
             /* -------------------------
-               9. ACCORDION & FORMSPREE
+               11. ACCORDION & FORMSPREE
             ------------------------- */
             window.toggleAccordion = function(button) {
                 const item = button.parentElement;
@@ -785,7 +999,7 @@
         }); // End DOMContentLoaded
 
         /* -------------------------
-           10. LANGUAGE DICTIONARY
+           12. LANGUAGE DICTIONARY
         ------------------------- */
         let currentLanguage = 'en';
         const i18n = {
